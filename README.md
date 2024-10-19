@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # gsb_front
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -29,9 +28,10 @@ npm run dev
 npm run build
 ```
 =======
+
+
 # GSB-ECOMMERCE-FRONT
 Vue.js - Tailwind CSS 
 
 API Rest - Headless approach 
 
->>>>>>> e5a3d644854d3212f0472be135ba92c4bb9d5746
