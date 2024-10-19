@@ -6,9 +6,14 @@ import loginPage from "@/views/LoginPage.vue";
 
 export const routes = [
     {
-        path: '/loginGsb',
+        path: '/',
         component: loginPage
     },
+
+    {
+        path: '/Accueil',
+        component :'Landing Page'
+    }
 ]
 
 const router = createRouter( {
