@@ -44,30 +44,44 @@
 <script setup>
 import {ref} from 'vue';
 import axios from "axios";
+import {useRouter} from "vue-router";
 
 const email = ref('');
 const password = ref('');
 
+const router = useRouter()
 
 const validateForm = async () => {
 
   try {
 
-    const apiResponse= await axios.post('http://localhost:8080/api/auth/login', {
-      email : email.value,
-      password : password.value
+    const apiResponse = await axios.post('http://localhost:8080/api/auth/login', {
+      email: email.value,
+      password: password.value
     })
 
     if (apiResponse.data.success) {
 
-      alert("Connexion réussie")
+      const userRole = apiResponse.data.role
+
+      if (userRole === "Admin") {
+        await router.push('/admin/dashboardAdmin')
+      } else if (userRole === "Salesperson") {
+        await router.push('/salesperson/dashboardSp')
+      } else if (userRole === "Medical_Employee") {
+        await router.push('/medicalEmployee/landingPage');
+      } else {
+        console.error('Role non attribué')
+      }
 
     } else {
+
+      console.error('Erreur lors de la connexion : ', apiResponse.data.message)
 
     }
 
   } catch (error) {
-    console.error(error)
+    console.error("Erreur lors de l'envoi du formulaire", error)
   }
 
 }
@@ -75,11 +89,6 @@ const validateForm = async () => {
 defineOptions({
   name: 'LoginPage',
 });
-
-
-
-
-
 
 
 </script>
@@ -143,8 +152,6 @@ input::placeholder {
 .forgot-password:hover::after {
   width: 100%;
 }
-
-
 
 
 </style>
