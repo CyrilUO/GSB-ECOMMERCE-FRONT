@@ -6,9 +6,7 @@
 
 <script>
 
-defineOptions({
-  name : 'Landing Page',
-})
+
 </script>
 
 <style>
