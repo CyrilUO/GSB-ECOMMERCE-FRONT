@@ -8,13 +8,16 @@ import productDetails from "@/views/medical_employee/ProductDetails.vue"
 import orderValidation from "@/views/medical_employee/OrderValidation.vue"
 import cart from "@/views/medical_employee/Cart.vue"
 
-import dashboardSP from "@/views/salesperson/dashboardSp.vue"
+
+import dashboardSalesperson from "@/views/salesperson/dashboardSalesperson.vue"
+import dashboardCustomerMonitoring from "@/views/salesperson/dashboardCustomerMonitoring.vue"
 import dashboardOrder from "@/views/salesperson/dashboardOrder.vue"
 
 import dashboardAdmin from "@/views/admin/dashboardAdmin.vue"
 import dashboardDatanalytics from "@/views/admin/dashboardDatanalytics.vue"
 import dashboardManageUsers from "@/views/admin/dashboardManageUsers.vue"
 import dashboardManageProducts from "@/views/admin/dashboardManageProducts.vue"
+import dashboardAddProduct from "@/views/admin/dashboardAddProduct.vue"
 
 export const routes = [
     {path: '/', redirect: '/login'},
@@ -26,30 +29,38 @@ export const routes = [
     // { path: '/medicalEmployee/productDetails', name: 'PDP', component: productDetails },
     // { path: '/medicalEmployee/Cart', name: 'Cart Page', component: cart },
     // { path: '/medicalEmployee/orderValidation', name: 'Order Validation', component: orderValidation },
+
     //
     {
         path: '/admin', name: 'Admin Dashboard', component: dashboardAdmin, redirect: 'admin/dashboardAnalytics',
         children: [
             {
-                path: 'dashboardAnalytics', component: dashboardDatanalytics
+                path: 'dashboardAnalytics',
+                component: dashboardDatanalytics
             },
             {
-                path: 'manage-users', component: dashboardManageUsers,
+                path: 'manage-users',
+                component: dashboardManageUsers,
             },
             {
-                path: 'manage-products', component: dashboardManageProducts
-            }
+                path: 'manage-products',
+                component: dashboardManageProducts,
+            },
+            {
+                path: 'add-products',
+                component: dashboardAddProduct,
+            },
         ]
     },
 
     {
-        path: '/salesperson/', name: 'Salesperson Dashboard', component: dashboardSP,
+        path: '/salesperson', name: 'Salesperson Dashboard', component: dashboardSalesperson, redirect: 'salesperson/order-dashboard',
         children: [
             {
-                path: 'order-dashboard', component: dashboardOrder
+                path: 'customer-monitoring', component: dashboardCustomerMonitoring,
             },
             {
-                path: ''
+                path: 'customer-order', component: dashboardOrder,
             }
         ]
     }

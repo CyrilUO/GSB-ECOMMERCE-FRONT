@@ -73,11 +73,11 @@ const validateForm = async () => {
       const userRole = apiResponse.data.role
 
       if (userRole === "Admin") {
-        await router.push('/admin/dashboardAdmin')
+        await router.push('/admin')
       } else if (userRole === "Salesperson") {
-        await router.push('/salesperson/dashboardSp')
+        await router.push('/salesperson')
       } else if (userRole === "Medical_Employee") {
-        await router.push('/medicalEmployee/landingPage');
+        await router.push('/medicalEmployee');
       } else {
         console.error('Role non attribué')
       }

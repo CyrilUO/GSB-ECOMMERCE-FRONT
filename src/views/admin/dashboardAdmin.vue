@@ -39,7 +39,9 @@
               >Gestion des utilisateurs
           </router-link>
           <router-link
-              :class="{ 'bg-yellow-600 text-white': route.path === '/admin/manage-products', 'bg-gray-700' : route.path !== '/admin/manage-products'}"
+              :class="{
+              'bg-yellow-600 text-white': route.path === '/admin/manage-products' || route.path === '/admin/add-products',
+              'bg-gray-700': route.path !== '/admin/manage-products' && route.path !== '/admin/add-products'}"
               to="/admin/manage-products"
               class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70"
               >Gestion des produits
@@ -47,7 +49,6 @@
         </nav>
       </aside>
 
-      <!-- Contenu principal du tableau de bord -->
       <main class="flex-1 bg-gray-100 p-8">
         <router-view/>
       </main>

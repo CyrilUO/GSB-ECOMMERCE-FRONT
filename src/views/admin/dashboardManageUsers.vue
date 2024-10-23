@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="min-h-screen flex flex-col">
     <h1 class="text-2xl font-bold mb-4">Gestion des Utilisateurs</h1>
 
-    <div class="bg-white shadow rounded-lg p-6">
-      <h2 class="text-lg font-semibold mb-4">Liste des Produits</h2>
+    <div class="flex-grow bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Liste des Utilisateurs</h2>
       <table class="min-w-full bg-white border-r-2 border-l-2">
         <thead>
         <tr>
@@ -34,7 +34,6 @@
         </tbody>
       </table>
 
-      <!-- Bouton pour ajouter un nouveau produit -->
       <div class="mt-4 flex justify-end">
         <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
           Ajouter un utilisateur
@@ -44,8 +43,9 @@
   </div>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
+/* Conteneur qui grandit pour occuper l'espace disponible */
+.flex-grow {
+  flex-grow: 1;
+}
 </style>
