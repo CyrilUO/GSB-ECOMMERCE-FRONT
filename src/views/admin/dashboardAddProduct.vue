@@ -42,9 +42,9 @@ const productStock = ref(0);
 const successMessage = ref('');
 const failureMessage = ref('');
 
-const sanitizeInput = (input) => {
-  return input.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-};
+// const sanitizeInput = (input) => {
+//   return input.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+// };
 
 const verifyName = (name) => {
   const regexName = /^[a-zA-Z0-9\s]+$
@@ -54,8 +54,8 @@ const verifyName = (name) => {
 const registerNewProduct = async () => {
   try {
     const newProduct = {
-      productName: verifyInput(productName.value),
-      productDescription: verifyInput(productDescription.value),
+      productName: verifyName(productName.value),
+      productDescription: verifyName(productDescription.value),
       productPrice: productPrice.value,
       productStock: productStock.value,
     };
