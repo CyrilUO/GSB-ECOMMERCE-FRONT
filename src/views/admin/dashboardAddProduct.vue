@@ -34,6 +34,7 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 const productName = ref('');
 const productDescription = ref('');
@@ -42,41 +43,45 @@ const productStock = ref(0);
 const successMessage = ref('');
 const failureMessage = ref('');
 
-// const sanitizeInput = (input) => {
-//   return input.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-// };
 
-const verifyName = (name) => {
-  const regexName = /^[a-zA-Z0-9\s]+$
-  return regexName.test(name)
+const sanitizeStringInput = (string) => {
+  const stringSanitized = DOMPurify.sanitize(string)
+  const regex = /^[a-zA-Z0-9\s]+$/
+
+  return regex.test(stringSanitized) ? stringSanitized : null;
 }
 
 const registerNewProduct = async () => {
   try {
     const newProduct = {
-      productName: verifyName(productName.value),
-      productDescription: verifyName(productDescription.value),
-      productPrice: productPrice.value,
-      productStock: productStock.value,
+      productName: sanitizeStringInput(productName.value),
+      productDescription: sanitizeStringInput(productName.value),
+      productPrice: sanitizeStringInput(productPrice.value),
+      productStock: sanitizeStringInput(productStock.value)
     };
 
-    await axios.post('http://localhost:8080/products', newProduct);
+    if (newProduct.productName && newProduct.productDescription) {
+      await axios.post('http://localhost:8080/products', newProduct);
 
-    productName.value = '';
-    productDescription.value = '';
-    productPrice.value = '';
-    productStock.value = '';
+      productName.value = '';
+      productDescription.value = '';
+      productPrice.value = 0;
+      productStock.value = 0;
 
-    successMessage.value = `Le produit ${newProduct.productName} a été ajouté avec succès !`;
+      successMessage.value = `Le produit ${newProduct.productName} a été ajouté avec succès !`;
 
-    setTimeout(() => {
-      successMessage.value = '';
-    }, 5000);
+      setTimeout(() => {
+        successMessage.value = '';
+      }, 5000);
+    } else {
+      failureMessage.value = `Le produit sélectionné n'a pu être ajouté`;
+      setTimeout(() => {
+        failureMessage.value = '';
+      }, 5000);
+    }
 
   } catch (error) {
     console.error('Erreur lors de l\'ajout du produit :', error);
-
-    failureMessage.value = `Le produit sélectionné n'a pu être ajouté`
 
     setTimeout( () =>{
       failureMessage.value =''
