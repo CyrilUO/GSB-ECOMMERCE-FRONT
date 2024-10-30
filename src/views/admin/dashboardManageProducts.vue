@@ -4,7 +4,7 @@
 
     <div class="bg-white shadow rounded-lg p-6">
       <h2 class="text-lg font-semibold mb-4">Liste des Produits</h2>
-      <p class="text-green-500 mt-4 mb-4" v-if="deletedProductMsg">{{deletedProductMsg}}</p>
+      <p class="text-green-500 mt-4 mb-4" v-if="messageStatus">{{ messageStatus }}</p>
       <table class="min-w-full bg-white border-collapse block md:table">
         <thead class="block md:table-header-group">
         <tr class="border border-gray-200 md:border-none block md:table-row">
@@ -30,20 +30,50 @@
         </thead>
         <tbody class="block md:table-row-group">
         <tr class="bg-gray-300 border border-gray-200 md:border-none block md:table-row" v-for="product in productItem"
-            :key="product.id">
+            :key="product.productId">
           <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">{{ product.productId }}</td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">{{ product.productName }}</td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">{{ product.productDescription }}
+          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
+            <template v-if="product.isGettingModified">
+              <input v-model="product.productName" class="w-full p-1 border rounded" />
+            </template>
+            <template v-else>
+              {{ product.productName }}
+            </template>
+          </td>
+          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
+            <template v-if="product.isGettingModified">
+              <input v-model="product.productDescription" class="w-full p-1 border rounded" />
+            </template>
+            <template v-else>
+              {{ product.productDescription }}
+            </template>
+          </td>
+          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
+            <template v-if="product.isGettingModified">
+              <input type="number" v-model="product.productPrice" class="w-full p-1 border rounded"  />
+            </template>
+            <template v-else>
+              {{ product.productPrice }}
+            </template>
+          </td>
+          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
+            <template v-if="product.isGettingModified">
+              <input type="number" v-model="product.productStock" class="w-full p-1 border rounded" />
+            </template>
+            <template v-else>
+              {{ product.productStock }}
+            </template>
           </td>
           <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
-            {{ product.productPrice.toFixed(2) }}
-          </td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">{{ product.productStock }}</td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
-            <button @click="updateProduct(product.productId)" class="hover:underline">
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="#c9823e" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+            <button v-if="!product.isGettingModified" @click="modifyProductStatus(product)" class="hover:underline">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                   width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="#c9823e" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
               </svg>
+            </button>
+            <button v-if="product.isGettingModified" @click="saveAndUpdateProduct(product)" class="hover:underline text-green-600">
+
             </button>
             <button @click="deleteProduct(product.productId)" class="hover:underline ml-4">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -67,46 +97,73 @@
 </template>
 
 <script setup>
+import {nextTick} from "vue";
 import {ref, onMounted} from "vue";
 import axios from "axios";
-import router from "@/router/index.js";
 import {useRouter} from "vue-router";
 
 const productItem = ref([])
+const messageStatus = ref('')
 
-const deletedProductMsg = ref('')
 
+const modifyProductStatus = (product) => {
+  product.isGettingModified = true;
+}
 
 const getProductData = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/products')
-    productItem.value = response.data;
-    console.log(response.data);
-  } catch (error) {
-    console.error(error)
-  }
-}
+    const response = await axios.get('http://localhost:8080/products');
+    productItem.value = response.data ;
 
-// const updateProduct = async (id) => {
-//   try {
-//     const updatedValue = {
-//
-//     }
-//     const update = await axios.put(`http://localhost:8080/products`);
-//
-//
-//   }
-// }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const saveAndUpdateProduct = async (product) => {
+  try {
+    const updatedValue = {
+      productId: product.productId,
+      productName: product.productName,
+      productDescription: product.productDescription,
+      productPrice: product.productPrice,
+      productStock: product.productStock,
+    };
+
+    console.log("Les données sont :", updatedValue)
+
+    const update = await axios.put(`http://localhost:8080/products/${product.productId}`, updatedValue);
+
+    if (update.status === 200) {
+      messageStatus.value = `Le produit dont l'id est ${product.productId} a été correctement mis à jour.`;
+      product.isGettingModified = false;
+
+      setTimeout(() => {
+        messageStatus.value = '';
+      }, 5000);
+
+      await getProductData();
+    } else {
+      messageStatus.value = `Erreur lors de la modification du produit à l'id ${product.productId}. Code erreur : ${update.status}`;
+      setTimeout(() => {
+        messageStatus.value = '';
+      }, 5000);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const deleteProduct = async (id) => {
+  /* TODO = Ajouter une modale plus jolie */
   if (confirm("Voulez-vous vraiment supprimer ce produit")) {
     try {
       await axios.delete(`http://localhost:8080/products/${id}`);
 
-      deletedProductMsg.value = `Produit ${id} supprimé avec succès`;
+      messageStatus.value = `Produit ${id} supprimé avec succès`;
 
       setTimeout(() => {
-        deletedProductMsg.value =''
+        messageStatus.value = ''
       }, 5000)
 
       await getProductData();
@@ -117,8 +174,6 @@ const deleteProduct = async (id) => {
     }
   }
 };
-
-
 
 const route = useRouter();
 

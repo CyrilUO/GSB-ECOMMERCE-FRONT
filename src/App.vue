@@ -6,13 +6,6 @@
 
 <script>
 
-
 </script>
-
-
-
 <style>
-
-
-
 </style>

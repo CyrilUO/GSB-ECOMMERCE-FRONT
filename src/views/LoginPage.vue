@@ -52,6 +52,7 @@ import {ref} from 'vue';
 import axios from "axios";
 import {useRouter} from "vue-router";
 
+
 import FooterComponent from '@/components/common/footerComponent.vue';
 
 const email = ref('');

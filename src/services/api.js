@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiBackend = axios.create({
 
-    baseURL : 'http://localhost:8080/products',
+    baseURL : 'http://localhost:8080',
     headers : {
         'Content-Type': "application/json"
     }
