@@ -36,7 +36,7 @@
             </td>
             <td class="py-3 px-5">
               <template v-if="user.isGettingModified">
-                <input v-model="user.userSurname" class="w-full p-2 border rounded"/>
+                <input v-model="user.userSurname" class="bg-amber-300 w-full p-2 border rounded"/>
               </template>
               <template v-else>
                 {{ user.userSurname }}
@@ -44,7 +44,7 @@
             </td>
             <td class="py-3 px-5">
               <template v-if="user.isGettingModified">
-                <input v-model="user.userName" class="w-full p-2 border rounded"/>
+                <input v-model="user.userName" class="bg-amber-300 w-full p-2 border rounded"/>
               </template>
               <template v-else>
                 {{ user.userName }}
@@ -53,7 +53,7 @@
 
             <td class="py-3 px-5">
               <template v-if="user.isGettingModified">
-                <input v-model="user.userEmail" class="w-full p-2 border rounded"/>
+                <input v-model="user.userEmail" class="bg-amber-300 w-full p-2 border rounded"/>
               </template>
               <template v-else>
                 {{ user.userEmail }}
@@ -62,7 +62,7 @@
 
             <td class="py-3 px-5">
               <template v-if="user.isGettingModified">
-                <input v-model="user.userPassword" class="w-full p-2 border rounded"/>
+                <input v-model="user.userPassword" class="bg-amber-300 w-full p-2 border rounded"/>
               </template>
               <template v-else>
                 {{ user.userPassword }}
@@ -71,7 +71,7 @@
 
             <td class="py-3 px-5">
               <template v-if="user.isGettingModified">
-                <input v-model="user.userRole" class="w-full p-2 border rounded"/>
+                <input v-model="user.userRole" class="bg-amber-300 w-full p-2 border rounded"/>
               </template>
               <template v-else>
                 {{ user.userRole }}
@@ -177,42 +177,67 @@ const modifyUserStatus = (user) => {
 const route = useRouter()
 
 
-
-
-
 const getUsersData = async () => {
   try {
     const response = await axios.get("http://localhost:8080/users");
-    users.value = await response.data
+    users.value = response.data
 
   } catch (error) {
-    console.error(error)
+    console.error("Erreur lors de la récuperation des donnees :", error)
   }
 
 }
 
 
+const updateAndSaveUser = async (user) => {
 
-const updateAndSaveUser = async  (id) => {
+  try {
+    const updatedUser = {
+      userId: user.userId,
+      userSurname: user.userSurname,
+      userName: user.userName,
+      userEmail: user.userEmail,
+      userPassword: user.userPassword,
+      userRole: user.userRole,
+    };
 
-}
+    const response = await axios.put(`http://localhost:8080/users/${user.userId}`, updatedUser);
 
-
-
-const deleteUser = async (id) => {
-  if (confirm("Voulez-vous vraiment supprimer cet utilisateur")) {
-    try {
-      await axios.delete(`http://localhost:8080/users/${id}`);
-      messageStatus.value = `Utilisateur ${id} supprimé avec succès`;
+    if (response.status === 200) {
+      messageStatus.value = `Le produit dont l'id est ${user.userId} a été correctement mis à jour.`;
+      user.isGettingModified = false;
       setTimeout(() => {
         messageStatus.value = "";
       }, 5000);
       await getUsersData();
+    } else {
+      messageStatus.value = `Erreur lors de la modification de l'utilisateur ${user.userId}.`;
+      setTimeout(() => {
+        messageStatus.value = "";
+      }, 5000);
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const deleteUser = async (id) => {
+  if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
+    try {
+      await axios.delete(`http://localhost:8080/users/${id}`);
+      messageStatus.value = `Utilisateur ${id} supprimé avec succès.`;
     } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la suppression :", error);
+      messageStatus.value = `Échec : Impossible de supprimer l'utilisateur ${id}.`;
+    } finally {
+      setTimeout(() => {
+        messageStatus.value = "";
+      }, 5000);
+      await getUsersData();
     }
   }
 };
+
 
 
 const goToAddUsers = async () => {
@@ -220,7 +245,7 @@ const goToAddUsers = async () => {
 };
 
 
-onMounted( () => {
+onMounted(() => {
   getUsersData();
 })
 
