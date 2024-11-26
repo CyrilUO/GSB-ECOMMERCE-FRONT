@@ -22,7 +22,14 @@
         <input v-model="productStock" type="number" placeholder="Stock" min="0"
                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
       </div>
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Ajouter le produit</button>
+      <div class="flex justify-start gap-3.5">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Ajouter le produit</button>
+        <router-link
+            to="/admin/manage_products"
+            class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 opacity-70">
+          Retour
+        </router-link>
+      </div>
     </form>
     <p v-if="successMessage" class="text-green-500 mt-4">{{ successMessage }}</p>
     <p v-else-if="failureMessage" class="text-red-700 mt-4">{{ failureMessage }}</p>
@@ -32,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 
@@ -45,17 +52,14 @@ const failureMessage = ref('');
 
 
 const sanitizeStringInput = (string) => {
-  const stringSanitized = DOMPurify.sanitize(string)
-  const regex = /^[a-zA-Z0-9\s]+$/
-
-  return regex.test(stringSanitized) ? stringSanitized : null;
+  return DOMPurify.sanitize(string)
 }
 
 const registerNewProduct = async () => {
   try {
     const newProduct = {
       productName: sanitizeStringInput(productName.value),
-      productDescription: sanitizeStringInput(productName.value),
+      productDescription: sanitizeStringInput(productDescription.value),
       productPrice: sanitizeStringInput(productPrice.value),
       productStock: sanitizeStringInput(productStock.value)
     };

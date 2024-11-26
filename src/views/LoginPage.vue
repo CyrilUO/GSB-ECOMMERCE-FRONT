@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col min-h-screen backf">
+  <div class="flex flex-col min-h-screen bg-blue-900 login-page">
     <!-- Contenu principal -->
-    <div class="flex-grow flex items-center justify-center rounded-3xl">
+    <div class="flex-grow flex items-center justify-center">
       <div class="flex-col justify-center px-4 lg:px-40 py-12 bg-amber-50 rounded-xl shadow-lg border_custo">
         <img
             src="@/assets/images/logo_gsb.png"
@@ -19,7 +19,7 @@
             />
           </div>
 
-          <div class="mb-4 bg-amber-50 mb-8">
+          <div class="mb-4 bg-amber-50">
             <label for="password" class="bg-amber-50 block text-black">Mot de passe :</label>
             <input
                 type="password"
@@ -42,9 +42,11 @@
         </div>
       </div>
     </div>
+    <!-- Footer -->
     <FooterComponent />
   </div>
 </template>
+
 
 <script setup>
 
@@ -97,27 +99,27 @@ const validateForm = async () => {
 
 </script>
 
-<style>
-
+<style scoped>
 :root {
-  --theme-blue-color : #2c2c8f;
+  --theme-blue-color: #2c2c8f;
 }
 
-
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   font-family: "Lekton", monospace;
   font-weight: bold;
 }
 
-body{
-background-color: var(--theme-blue-color);
+body {
+  background-color: var(--theme-blue-color);
+
+}
+
+.login-page {
+  background-color: var(--theme-blue-color);
 }
 
 .btn_custo {
-  background-color : cornflowerblue;
+  background-color: cornflowerblue;
   transition: transform 1s ease;
 }
 
@@ -126,11 +128,9 @@ background-color: var(--theme-blue-color);
   transition: transform 0.5s ease;
 }
 
-
 .border_custo {
-  border: 5px solid  var(--theme-blue-color);
+  border: 5px solid var(--theme-blue-color);
 }
-
 
 .forgot-password {
   position: relative;
@@ -153,6 +153,4 @@ background-color: var(--theme-blue-color);
 .forgot-password:hover::after {
   width: 100%;
 }
-
-
 </style>

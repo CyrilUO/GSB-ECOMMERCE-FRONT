@@ -1,94 +1,151 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-4">Gestion des Produits</h1>
+    <h1 class="text-3xl font-extrabold mb-6 text-gray-800">Gestion des Produits</h1>
 
-    <div class="bg-white shadow rounded-lg p-6">
-      <h2 class="text-lg font-semibold mb-4">Liste des Produits</h2>
-      <p class="text-green-500 mt-4 mb-4" v-if="messageStatus">{{ messageStatus }}</p>
-      <table class="min-w-full bg-white border-collapse block md:table">
-        <thead class="block md:table-header-group">
-        <tr class="border border-gray-200 md:border-none block md:table-row">
-          <th class="py-2 px-4 bg-gray-400 text-white border-b border-r md:border md:border-grey-500 block md:table-cell ">
-            ID
-          </th>
-          <th class="py-2 px-4 bg-gray-400 text-white border-b border-r md:border md:border-grey-500 block md:table-cell">
-            Nom du produit
-          </th>
-          <th class="py-2 px-4 bg-gray-400 text-white border-b border-r md:border md:border-grey-500 block md:table-cell">
-            Description
-          </th>
-          <th class="py-2 px-4 bg-gray-400 text-white border-b border-r md:border md:border-grey-500 block md:table-cell">
-            Prix
-          </th>
-          <th class="py-2 px-4 bg-gray-400 text-white border-b border-r md:border md:border-grey-500 block md:table-cell">
-            Stock
-          </th>
-          <th class="py-2 px-4 bg-gray-400 text-white border-b border-r md:border md:border-grey-500 block md:table-cell">
-            Actions
-          </th>
-        </tr>
-        </thead>
-        <tbody class="block md:table-row-group">
-        <tr class="bg-gray-300 border border-gray-200 md:border-none block md:table-row" v-for="product in productItem"
-            :key="product.productId">
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">{{ product.productId }}</td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
-            <template v-if="product.isGettingModified">
-              <input v-model="product.productName" class="w-full p-1 border rounded" />
-            </template>
-            <template v-else>
-              {{ product.productName }}
-            </template>
-          </td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
-            <template v-if="product.isGettingModified">
-              <input v-model="product.productDescription" class="w-full p-1 border rounded" />
-            </template>
-            <template v-else>
-              {{ product.productDescription }}
-            </template>
-          </td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
-            <template v-if="product.isGettingModified">
-              <input type="number" v-model="product.productPrice" class="w-full p-1 border rounded"  />
-            </template>
-            <template v-else>
-              {{ product.productPrice }}
-            </template>
-          </td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell" :class="{ 'bg-yellow-100': product.isGettingModified }">
-            <template v-if="product.isGettingModified">
-              <input type="number" v-model="product.productStock" class="w-full p-1 border rounded" />
-            </template>
-            <template v-else>
-              {{ product.productStock }}
-            </template>
-          </td>
-          <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
-            <button v-if="!product.isGettingModified" @click="modifyProductStatus(product)" class="hover:underline">
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                   width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="#c9823e" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-              </svg>
-            </button>
-            <button v-if="product.isGettingModified" @click="saveAndUpdateProduct(product)" class="hover:underline text-green-600">
+    <div class="bg-white shadow-lg rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-6 text-blue-700">Liste des Produits</h2>
+      <p
+          class="bg-green-500 text-white font-semibold rounded-lg py-2 px-4 text-center mb-4"
+          v-if="messageStatus"
+      >
+        {{ messageStatus }}
+      </p>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border-collapse border-gray-200 rounded-lg shadow-md">
+          <thead>
+          <tr class="bg-gradient-to-r from-blue-700 to-blue-800 text-white border border-white">
+            <th class="py-3 px-5 text-left border-white border-2">ID</th>
+            <th class="py-3 px-5 text-left border-white border-2">Nom du produit</th>
+            <th class="py-3 px-5 text-left border-white border-2">Description</th>
+            <th class="py-3 px-5 text-left border-white border-2">Prix</th>
+            <th class="py-3 px-5 text-left border-white border-2">Stock</th>
+            <th class="py-3 px-5 text-center border-white border-2">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
 
-            </button>
-            <button @click="deleteProduct(product.productId)" class="hover:underline ml-4">
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                   width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="#8b0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M6 18 17.94 6M18 18 6.06 6"/>
-              </svg>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+          <!-- Boucle sur l'ensemble des produit de ma base de données-->
 
-      <div class="mt-4 flex justify-end">
-        <button @click="goToAddProduct" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <tr
+              v-for="product in productItem"
+              :key="product.productId"
+              class="hover:bg-blue-50 odd:bg-gray-50 even:bg-white"
+          >
+            <td class="py-3 px-5 text-gray-700">{{ product.productId }}</td>
+            <td class="py-3 px-5">
+              <template v-if="product.isGettingModified">
+                <input v-model="product.productName" class="w-full p-2 border rounded"/>
+              </template>
+              <template v-else>
+                {{ product.productName }}
+              </template>
+            </td>
+            <td class="py-3 px-5">
+              <template v-if="product.isGettingModified">
+                <input
+                    v-model="product.productDescription"
+                    class="w-full p-2 border rounded"
+                />
+              </template>
+              <template v-else>
+                {{ product.productDescription }}
+              </template>
+            </td>
+            <td class="py-3 px-5">
+              <template v-if="product.isGettingModified">
+                <input
+                    type="number"
+                    v-model="product.productPrice"
+                    class="w-full p-2 border rounded"
+                />
+              </template>
+              <template v-else>
+                {{ product.productPrice }}
+              </template>
+            </td>
+            <td class="py-3 px-5">
+              <template v-if="product.isGettingModified">
+                <input
+                    type="number"
+                    v-model="product.productStock"
+                    class="w-full p-2 border rounded"
+                />
+              </template>
+              <template v-else>
+                {{ product.productStock }}
+              </template>
+            </td>
+            <td class="py-3 px-5 text-center flex justify-center items-center gap-4">
+
+
+              <!-- Modifier -->
+              <button
+                  v-if="!product.isGettingModified"
+                  @click="modifyProductStatus(product)"
+                  class="text-blue-600 hover:scale-110 transition-transform"
+              >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                  <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.862 4.487a2.25 2.25 0 013.182 0l.469.47a2.25 2.25 0 010 3.182l-9.743 9.742a4.5 4.5 0 01-2.006 1.163l-3.01.752.753-3.01a4.5 4.5 0 011.163-2.006l9.743-9.743z"
+                  />
+                  <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19.5 8.25L15.75 4.5"
+                  />
+                </svg>
+              </button>
+
+
+              <button
+                  v-if="product.isGettingModified"
+                  @click="saveAndUpdateProduct(product)"
+                  class="text-green-600 hover:scale-110 transition-transform inline-flex items-center justify-center p-0 m-0 leading-none align-middle"
+              >
+                <CheckCircleIcon class="w-6 h-6"/>
+              </button>
+
+
+              <!-- Supprimer -->
+              <button
+                  v-if="!product.isGettingModified"
+                  @click="deleteProduct(product.productId)"
+                  class="text-red-600 hover:scale-110 transition-transform"
+              >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                  <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button
+            @click="goToAddProduct"
+            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
           Ajouter un produit
         </button>
       </div>
@@ -96,25 +153,24 @@
   </div>
 </template>
 
+
 <script setup>
-import {nextTick} from "vue";
+import {CheckCircleIcon} from "@heroicons/vue/24/outline";
 import {ref, onMounted} from "vue";
 import axios from "axios";
 import {useRouter} from "vue-router";
 
-const productItem = ref([])
-const messageStatus = ref('')
-
+const productItem = ref([]);
+const messageStatus = ref("");
 
 const modifyProductStatus = (product) => {
   product.isGettingModified = true;
-}
+};
 
 const getProductData = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/products');
-    productItem.value = response.data ;
-
+    const response = await axios.get("http://localhost:8080/products");
+    productItem.value = response.data;
   } catch (error) {
     console.error(error);
   }
@@ -122,7 +178,7 @@ const getProductData = async () => {
 
 const saveAndUpdateProduct = async (product) => {
   try {
-    const updatedValue = {
+    const updatedValues = {
       productId: product.productId,
       productName: product.productName,
       productDescription: product.productDescription,
@@ -130,23 +186,22 @@ const saveAndUpdateProduct = async (product) => {
       productStock: product.productStock,
     };
 
-    console.log("Les données sont :", updatedValue)
-
-    const update = await axios.put(`http://localhost:8080/products/${product.productId}`, updatedValue);
+    const update = await axios.put(
+        `http://localhost:8080/products/${product.productId}`,
+        updatedValues
+    );
 
     if (update.status === 200) {
       messageStatus.value = `Le produit dont l'id est ${product.productId} a été correctement mis à jour.`;
       product.isGettingModified = false;
-
       setTimeout(() => {
-        messageStatus.value = '';
+        messageStatus.value = "";
       }, 5000);
-
       await getProductData();
     } else {
-      messageStatus.value = `Erreur lors de la modification du produit à l'id ${product.productId}. Code erreur : ${update.status}`;
+      messageStatus.value = `Erreur lors de la modification du produit.`;
       setTimeout(() => {
-        messageStatus.value = '';
+        messageStatus.value = "";
       }, 5000);
     }
   } catch (error) {
@@ -155,22 +210,16 @@ const saveAndUpdateProduct = async (product) => {
 };
 
 const deleteProduct = async (id) => {
-  /* TODO = Ajouter une modale plus jolie */
   if (confirm("Voulez-vous vraiment supprimer ce produit")) {
     try {
       await axios.delete(`http://localhost:8080/products/${id}`);
-
       messageStatus.value = `Produit ${id} supprimé avec succès`;
-
       setTimeout(() => {
-        messageStatus.value = ''
-      }, 5000)
-
+        messageStatus.value = "";
+      }, 5000);
       await getProductData();
-
     } catch (error) {
       console.error(error);
-      alert('Une erreur est survenue');
     }
   }
 };
@@ -178,16 +227,13 @@ const deleteProduct = async (id) => {
 const route = useRouter();
 
 const goToAddProduct = async () => {
-  await route.push('/admin/add-products')
-}
-
+  await route.push("/admin/add_products");
+};
 
 onMounted(() => {
-  getProductData()
+  getProductData();
 });
-
 </script>
 
 <style>
-
 </style>

@@ -5,24 +5,38 @@
         <div class="text-sm items-center md:text-base mb-2 md:mb-0">
           <p>&copy; GSB Ecommerce. Tous droits réservés.</p>
         </div>
-        <div class="flex flex-wrap justify-center gap-2 md:">
-          <a href="#" class="text-white hover:text-blue-400 ml-4">Conditions d'utilisation</a>
-          <a href="#" class="text-white hover:text-blue-400 ml-4">Politique de confidentialité</a>
-          <a href="#" class="text-white hover:text-blue-400 ml-4">Contact</a>
+        <div class="flex flex-wrap justify-center gap-8 md: mb-0">
+          <a @click="goToCGU" class="text-white cst_link hover:text-blue-400 ml-4">Conditions d'utilisation</a>
+          <a @click="goToPolicies" class="text-white cst_link hover:text-blue-400 ml-4">Politique de confidentialité</a>
         </div>
       </div>
     </div>
   </footer>
 </template>
-<script>
+<script setup>
+
+import {useRouter} from "vue-router";
+
+const router = useRouter()
+
+const goToCGU = () => {
+  router.push('/cgu')
+}
+
+const goToPolicies = () => {
+  router.push('/policies')
+}
 
 </script>
 
-<style>
+<style scoped>
+
 *{
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  padding-block: 0.2rem;
+}
 
+.cst_link{
+  cursor: pointer;
 }
 </style>
