@@ -1,35 +1,37 @@
-# GSB-ECOMMERCE-FRONT
+# 🌐 GSB-ECOMMERCE-FRONT
+> Partie front de la plateforme ecommerce GSB
 
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
+## ⚙️ Customize Configuration
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
+## 🚀 Project Setup
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### ⚡ Compile and Hot-Reload for Development
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+### 🛠️ Compile and Minify for Production
 
 ```sh
 npm run build
 ```
-=======
 
 
-Vue.js - Tailwind CSS 
+### 📦 Tech Stack
+> Vue.js (Javascript)
 
-API Rest - Headless approach 
+> Tailwind CSS 
+
+
+### 🏗️ Architecture
+>API Rest
+
+>Approche Headless 
 
