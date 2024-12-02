@@ -6,9 +6,9 @@
           <img src="@/assets/images/logo_gsb.png" alt="logo" class="h-10 mr-4" />
         </div>
         <div class="flex space-x-8 text-sm md:text-lg">
-          <router-link to="/medical_employee/products" class="hover:underline">NOS PRODUITS</router-link>
-          <router-link to="/medical_employee/cart" class="hover:underline">PANIER</router-link>
-          <router-link to="/medical_employee/order_validation" class="hover:underline">Récapitulatif de commandes</router-link>
+          <router-link to="/medical-employee/products" class="hover:underline">NOS PRODUITS</router-link>
+          <router-link to="/medical-employee/cart" class="hover:underline">PANIER</router-link>
+          <router-link to="/medical-employee/order-validation" class="hover:underline">Récapitulatif de commandes</router-link>
           <router-link to="/" class="hover:underline flex items-center">
             DECONNEXION
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,7 +27,7 @@
           BIENVENUE SUR<br> LA PLATEFORME<br> GSB ECOMMERCE
         </h1>
 
-        <router-link to="/medical_employee/carousel_products" class="w-60 py-2 bg-blue-700 rounded-2xl text-white text-lg hover:bg-blue-800 focus:outline-none md:w-44 lg:w-52">
+        <router-link to="/medical-employee/carousel-products" class="w-60 py-2 bg-blue-700 rounded-2xl text-white text-lg hover:bg-blue-800 focus:outline-none md:w-44 lg:w-52">
           DECOUVRIR NOS PRODUITS
         </router-link>
       </div>

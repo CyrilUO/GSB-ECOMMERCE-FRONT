@@ -7,10 +7,10 @@ export const salespersonRoutes = [
         path: '/salesperson',
         name: 'Salesperson Dashboard',
         component: dashboardSalesperson,
-        redirect: '/salesperson/customer_monitoring',
+        redirect: '/salesperson/customer-monitoring',
         children: [
-            { path: 'customer_monitoring', component: dashboardCustomerMonitoring },
-            { path: 'customer_order', component: dashboardOrder },
+            { path: 'customer-monitoring', component: dashboardCustomerMonitoring },
+            { path: 'customer-order', component: dashboardOrder },
         ],
     },
 ];

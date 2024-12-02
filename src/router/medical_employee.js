@@ -10,11 +10,11 @@ export const medicalEmployeeRoutes = [
         name: 'Welcome Page',
         redirect: '/medical_employee/landing_page',
         children: [
-            { path: 'landing_page', component: landingPage, name: 'Welcome Page' },
-            { path: 'carousel_products', component: carouselProducts, name: 'PLP' },
-            { path: 'product_details', component: productDetails, name: 'PDP' },
+            { path: 'landing-page', component: landingPage, name: 'Welcome Page' },
+            { path: 'carousel-products', component: carouselProducts, name: 'PLP' },
+            { path: 'product-details', component: productDetails, name: 'PDP' },
             { path: 'cart', component: cart, name: 'Cart Page' },
-            { path: 'order_validation', component: orderValidation, name: 'Order Validation' },
+            { path: 'order-validation', component: orderValidation, name: 'Order Validation' },
         ],
     },
 ];

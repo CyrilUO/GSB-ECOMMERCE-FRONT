@@ -25,8 +25,8 @@
       <aside class="w-64 bg-gray-800 text-white py-8 px-6">
         <h2 class="text-xl font-bold mb-6">TABLEAU DE BORD</h2>
         <nav class="flex flex-col space-y-4">
-          <a href="#" class="bg-gray-700 py-2 px-4 rounded-lg">Suivi Clients</a>
-          <a href="#" class="bg-gray-700 py-2 px-4 rounded-lg">Commandes Clients</a>
+          <a href="" class="bg-gray-700 py-2 px-4 rounded-lg">Suivi Clients</a>
+          <a href="" class="bg-gray-700 py-2 px-4 rounded-lg">Commandes</a>
         </nav>
       </aside>
 
@@ -38,6 +38,11 @@
 </template>
 
 <script setup>
+
+import {useRouter} from "vue-router";
+
+const route = useRouter();
+
 </script>
 
 <style scoped>

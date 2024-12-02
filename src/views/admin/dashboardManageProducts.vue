@@ -227,7 +227,7 @@ const deleteProduct = async (id) => {
 const route = useRouter();
 
 const goToAddProduct = async () => {
-  await route.push("/admin/add_products");
+  await route.push("/admin/add-products");
 };
 
 onMounted(() => {

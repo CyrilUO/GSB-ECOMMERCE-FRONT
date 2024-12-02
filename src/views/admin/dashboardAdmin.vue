@@ -24,12 +24,12 @@
         <h2 class="text-xl font-bold mb-6">TABLEAU DE BORD</h2>
         <nav class="flex flex-col space-y-4">
           <router-link
-              :class="{ 'bg-yellow-600 text-white': route.path === '/admin/dashboard_analytics', 'bg-gray-700' : route.path !== '/admin/dashboardAnalytics'}"
+              :class="{ 'bg-yellow-600 text-white': route.path === '/admin/dashboard-analytics', 'bg-gray-700' : route.path !== '/admin/dashboard-analytics'}"
               to="/admin/dashboard_analytics"
               class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70"
           >Datanalytics</router-link>
           <router-link
-              :class="route.path === '/admin/manage_users' || route.path === '/admin/add_users' ?
+              :class="route.path === '/admin/manage-users' || route.path === '/admin/add-users' ?
                'bg-yellow-600 text-white' :
                'bg-gray-700'"
               to="/admin/manage_users"
@@ -41,7 +41,7 @@
             <span>Gestion des utilisateurs</span>
           </router-link>
           <router-link
-              :class="route.path === '/admin/manage_products' || route.path ==='/admin/add_products'
+              :class="route.path === '/admin/manage-products' || route.path ==='/admin/add_products'
               ? 'bg-yellow-600 text-white'
               : 'bg-gray-700'"
               to="/admin/manage_products"

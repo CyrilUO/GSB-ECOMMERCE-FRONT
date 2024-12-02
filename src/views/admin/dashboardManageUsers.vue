@@ -199,16 +199,18 @@ const updateAndSaveUser = async (user) => {
       userEmail: user.userEmail,
       userPassword: user.userPassword,
       userRole: user.userRole,
+      userModifiedAt: user.userModifiedAt,
     };
 
     const response = await axios.put(`http://localhost:8080/users/${user.userId}`, updatedUser);
 
     if (response.status === 200) {
-      messageStatus.value = `Le produit dont l'id est ${user.userId} a été correctement mis à jour.`;
+      messageStatus.value = `L'utilisateur dont l'id est ${user.userId} a été correctement mis à jour.`;
       user.isGettingModified = false;
       setTimeout(() => {
         messageStatus.value = "";
       }, 5000);
+      /* On refetch les données users pour y mettre à jour dans le front */
       await getUsersData();
     } else {
       messageStatus.value = `Erreur lors de la modification de l'utilisateur ${user.userId}.`;
@@ -241,7 +243,7 @@ const deleteUser = async (id) => {
 
 
 const goToAddUsers = async () => {
-  await route.push("/admin/add_users");
+  await route.push("/admin/add-users");
 };
 
 
