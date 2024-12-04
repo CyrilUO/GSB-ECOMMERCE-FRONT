@@ -25,8 +25,24 @@
       <aside class="w-64 bg-gray-800 text-white py-8 px-6">
         <h2 class="text-xl font-bold mb-6">TABLEAU DE BORD</h2>
         <nav class="flex flex-col space-y-4">
-          <a href="" class="bg-gray-700 py-2 px-4 rounded-lg">Suivi Clients</a>
-          <a href="" class="bg-gray-700 py-2 px-4 rounded-lg">Commandes</a>
+          <router-link
+              :class="route.path === '/salesperson/customer-monitoring' || route.path === '/admin/add-users' ?
+               'bg-yellow-600 text-white' :
+               'bg-gray-700'"
+              to="/admin/manage-users"
+              class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70 flex items-center space-x-2"
+          >
+            <span>Suivi clients</span>
+          </router-link>
+          <router-link
+              :class="route.path === '/salesperson/manage-users' || route.path === '/admin/add-users' ?
+               'bg-yellow-600 text-white' :
+               'bg-gray-700'"
+              to="/admin/manage-users"
+              class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70 flex items-center space-x-2"
+          >
+            <span>Suivi commandes</span>
+          </router-link>
         </nav>
       </aside>
 
@@ -39,9 +55,9 @@
 
 <script setup>
 
-import {useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 
-const route = useRouter();
+const route = useRoute();
 
 </script>
 

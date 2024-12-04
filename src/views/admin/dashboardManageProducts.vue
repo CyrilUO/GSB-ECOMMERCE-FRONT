@@ -169,7 +169,14 @@ const modifyProductStatus = (product) => {
 
 const getProductData = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/products");
+    const response = await axios.get("http://localhost:8080/products", {
+      auth: {
+        username: "name",
+        password: "password",
+      },
+      withCredentials : true
+    });
+
     productItem.value = response.data;
   } catch (error) {
     console.error(error);

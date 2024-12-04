@@ -4,6 +4,8 @@ import router from "@/router/index.js";
 
 import './assets/styles/main.css';
 
+import axios from "axios";
+
 const app = createApp(App)
 
 

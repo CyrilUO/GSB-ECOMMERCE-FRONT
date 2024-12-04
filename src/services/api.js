@@ -1,27 +1,17 @@
 import axios from "axios";
 
-export const apiBackend = axios.create({
-    baseURL: "http://localhost:8080/api/",
-    headers: {
-        "Content-Type": "application/json",
-    },
+// Base URL de l'API
+const API_BASE_URL = "http://localhost:8080";
+
+// Headers par défaut
+const defaultHeaders = {
+    "Content-Type": "application/json",
+};
+
+// Instance Axios
+export const api = axios.create({
+    baseURL: API_BASE_URL,
+    headers: defaultHeaders,
 });
-
-
-// TODO revoir cette fonction pour centraliser les appels API
-// export const apiCall = async (method, url, data = null, params = null) => {
-//     try {
-//         const response = await apiBackend({
-//             method,
-//             url,
-//             data,
-//             params,
-//         });
-//         return response.data;
-//     } catch (error) {
-//         console.error(error);
-//         throw error
-//     }
-// }
 
 

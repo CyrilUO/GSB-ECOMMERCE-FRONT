@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-// TODO le router push ne doit pas renvoyé vers la page de login mais vers la dernière page consulté, utiliser les modules vue de Storage de session
+// TODO le router push ne doit pas renvoyé vers la page de login mais vers la dernière page consulté, utiliser les modules vue de Session storage
 import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 

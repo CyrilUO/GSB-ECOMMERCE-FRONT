@@ -8,3 +8,30 @@
     --theme-blue-color: #2c2c8f;
     --theme-light-color: #f3f4f6;
 }
+
+@layer utilities {
+    .px-container-responsive {
+        padding-inline: 1rem; /* xsPhone */
+
+        @media (min-width: 640px) { /* phone */
+            padding-inline: 2.5rem;
+        }
+
+        @media (min-width: 768px) { /* tablet */
+            padding-inline: 5rem;
+        }
+
+        @media (min-width: 1024px) { /* laptop */
+            padding-inline: 8rem;
+        }
+
+        @media (min-width: 1280px) { /* desktop */
+            padding-inline: 13rem;
+        }
+
+        @media (min-width: 1536px) { /* xlDesktop */
+            padding-inline: 15rem;
+        }
+    }
+}
+

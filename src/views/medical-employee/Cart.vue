@@ -2,11 +2,8 @@
 <h1>HELLO WORLD</h1>
 </template>
 
-<script>
+<script setup>
 
-export default {
-  name : 'cart'
-}
 
 </script>
 

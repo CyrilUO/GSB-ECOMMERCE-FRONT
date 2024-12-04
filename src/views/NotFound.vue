@@ -14,20 +14,18 @@
 <script setup>
 
 // TODO le router push ne doit pas renvoyé vers la page de login mais vers la dernière page consulté, utiliser les modules vue de Storage de session
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import {onMounted, ref} from "vue";
-import {useRouter} from "vue-router";
-
-const route = useRouter();
+const router = useRouter();
 const countdown = ref(5);
 
 onMounted(() => {
   startCountdown();
   setTimeout(() => {
-    route.push("/");
-  },5000)
+    router.push("/");
+  }, 5000);
 });
-
 
 const startCountdown = () => {
   const interval = setInterval(() => {
@@ -38,6 +36,7 @@ const startCountdown = () => {
     }
   }, 1000);
 };
+
 
 
 </script>

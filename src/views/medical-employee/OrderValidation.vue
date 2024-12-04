@@ -3,10 +3,7 @@
 
 </template>
 
-<script>
- export default {
-   name : "productDetails"
- }
+<script setup>
 
 </script>
 

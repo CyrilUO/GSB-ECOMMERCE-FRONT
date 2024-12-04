@@ -25,7 +25,7 @@
       <div class="flex justify-start gap-3.5">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Ajouter le produit</button>
         <router-link
-            to="/admin/manage_products"
+            to="/admin/manage-products"
             class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 opacity-70">
           Retour
         </router-link>

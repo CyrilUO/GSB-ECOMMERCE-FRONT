@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-screen bg-blue-900 login-page">
     <!-- Contenu principal -->
     <div class="flex-grow flex items-center justify-center">
-      <div class="flex-col justify-center px-4 lg:px-40 py-12 bg-amber-50 rounded-xl shadow-lg border_custo">
+      <div class="flex-col justify-center py-12 bg-amber-50 rounded-xl shadow-lg border_custo px-container-responsive">
         <img
             src="@/assets/images/logo_gsb.png"
             class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
@@ -97,11 +97,11 @@ const validateForm = async () => {
     if (apiResponse.data.success) {
       const userRole = apiResponse.data.role;
 
-      if (userRole === "Admin") {
+      if (userRole === "admin") {
         await router.push("/admin");
-      } else if (userRole === "Salesperson") {
+      } else if (userRole === "salesperson") {
         await router.push("/salesperson");
-      } else if (userRole === "Medical_Employee") {
+      } else if (userRole === "medical-employee") {
         await router.push("/medical-employee");
       } else {
         loginError.value = "Rôle non attribué.";
@@ -173,4 +173,7 @@ body {
 .forgot-password:hover::after {
   width: 100%;
 }
+
 </style>
+
+

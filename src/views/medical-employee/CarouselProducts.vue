@@ -122,10 +122,8 @@
 
 </template>
 
-<script>
-export default {
-  name : "carousel_products"
-}
+<script setup>
+
 
 </script>
 

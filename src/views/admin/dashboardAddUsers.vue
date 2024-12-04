@@ -34,7 +34,7 @@
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required>
           <option value="admin">Admin</option>
-          <option value="medical_employee">Employé Médical</option>
+          <option value="medical-employee">Employé Médical</option>
           <option value="salesperson">Commercial</option>
         </select>
         <div class="pointer-events-none absolute inset-y-0 right-0 top-6 flex items-center px-2 text-gray-700">
@@ -50,7 +50,7 @@
           l'utilisateur
         </button>
         <routerLink
-            to="/admin/manage_users"
+            to="/admin/manage-users"
             class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 opacity-70">
           Retour
         </routerLink>

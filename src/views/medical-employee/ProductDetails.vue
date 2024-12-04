@@ -3,11 +3,7 @@
 
 </template>
 
-<script>
-
-export default {
-  name : "orderValidation"
-}
+<script setup>
 
 </script>
 

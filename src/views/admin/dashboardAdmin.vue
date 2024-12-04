@@ -25,26 +25,23 @@
         <nav class="flex flex-col space-y-4">
           <router-link
               :class="{ 'bg-yellow-600 text-white': route.path === '/admin/dashboard-analytics', 'bg-gray-700' : route.path !== '/admin/dashboard-analytics'}"
-              to="/admin/dashboard_analytics"
+              to="/admin/dashboard-analytics"
               class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70"
           >Datanalytics</router-link>
           <router-link
               :class="route.path === '/admin/manage-users' || route.path === '/admin/add-users' ?
                'bg-yellow-600 text-white' :
                'bg-gray-700'"
-              to="/admin/manage_users"
+              to="/admin/manage-users"
               class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70 flex items-center space-x-2"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a2 2 0 00-2-2h-6M9 20H4a2 2 0 01-2-2v-1a6 6 0 0112 0v1M9 10a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
             <span>Gestion des utilisateurs</span>
           </router-link>
           <router-link
-              :class="route.path === '/admin/manage-products' || route.path ==='/admin/add_products'
+              :class="route.path === '/admin/manage-products' || route.path ==='/admin/add-products'
               ? 'bg-yellow-600 text-white'
               : 'bg-gray-700'"
-              to="/admin/manage_products"
+              to="/admin/manage-products"
               class="bg-gray-700 py-2 px-4 rounded-lg hover:opacity-70"
           >Gestion des produits</router-link>
         </nav>
