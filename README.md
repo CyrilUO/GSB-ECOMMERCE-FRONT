@@ -55,3 +55,20 @@ Voici un aperçu de la structure principale du projet :
 4. **Lancer le projet en mode développement** :
     ```bash
     npm run dev
+
+## ✨ Fonctionnalités Principales
+
+- 🖥️ **Dashboard** : Gestion intuitive pour les administrateurs.
+- 🛒 **Catalogue Produits** : Consultation et gestion des produits pour les employés médicaux.
+- 📊 **Analytique** : Affichage de graphiques dynamiques.
+- 🔐 **Authentification** : Gestion des rôles (Admin, Employé Médical, Commerciaux).
+
+---
+
+## 📚 Technologies Utilisées
+
+- **Vue.js** : Framework JavaScript moderne.
+- **TailwindCSS** : Styles CSS utilitaires pour une conception rapide.
+- **Vite** : Outil de build ultra rapide.
+- **Node.js** : Gestion des dépendances.
+
