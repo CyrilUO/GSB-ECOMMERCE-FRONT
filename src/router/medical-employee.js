@@ -9,12 +9,14 @@ export const medicalEmployeeRoutes = [
     {
         path: '/medical-employee',
         name: 'Medical Employee',
+        // meta: { requiresRole: "medical-employee" },
+
         component: RedirectView,
         redirect: '/medical-employee/landing-page',
         children: [
             { path: 'landing-page', component: landingPage, name: 'Landing Page' },
             { path: 'carousel-products', component: carouselProducts, name: 'PLP' },
-            { path: 'product-details', component: productDetails, name: 'PDP' },
+            { path: 'product-details/:id', component: productDetails, name: 'PDP' },
             { path: 'cart', component: cart, name: 'Cart Page' },
             { path: 'order-validation', component: orderValidation, name: 'Order Validation' },
         ],

@@ -6,6 +6,7 @@ export const salespersonRoutes = [
     {
         path: '/salesperson',
         name: 'Salesperson Dashboard',
+        // meta: { requiresRole: "salesperson" },
         component: dashboardSalesperson,
         redirect: '/salesperson/customer-monitoring',
         children: [

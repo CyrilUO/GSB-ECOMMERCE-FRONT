@@ -53,14 +53,14 @@
       </div>
     </div>
     <!-- Footer -->
-    <FooterComponent />
+    <FooterComponent/>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import {ref} from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 
 import FooterComponent from "@/components/common/footerComponent.vue";
 
@@ -76,12 +76,18 @@ const router = useRouter();
 // TODO Implémenter la logique back pour faire fonctionner le formulaire : simple implémentation, vérification des correspondances entre les mots de passe  emails avec ceux tapés
 // TODO ajouter des timers pour reinitialiser les messages d'erreur ou d'injonction
 
+
 const validateForm = async () => {
   emailError.value = userEmail.value.trim() === "" || !/\S+@\S+\.\S+/.test(userEmail.value);
   passwordError.value = userPassword.value.trim() === "";
 
   if (emailError.value || passwordError.value) {
+
     loginError.value = "Veuillez corriger les erreurs.";
+    setTimeout(() => {
+      loginError.value = "";
+    }, 3000);
+
     return;
   }
 
@@ -108,10 +114,16 @@ const validateForm = async () => {
       }
     } else {
       loginError.value = apiResponse.data.message || "Email ou mot de passe incorrect.";
+      setTimeout(() => {
+        loginError.value = "";
+      }, 3000);
     }
   } catch (error) {
     loginError.value = "Erreur de connexion. Veuillez réessayer.";
     console.error("Erreur lors de la connexion :", error);
+    setTimeout(() => {
+      loginError.value = "";
+    }, 3000);
   } finally {
     isLoading.value = false;
   }

@@ -29,7 +29,7 @@ const startCountdown = () => {
       countdown.value -= 1;
     } else {
       clearInterval(interval);
-      router.push("/login");
+      logout();
     }
   }, 1000);
 };
@@ -37,6 +37,21 @@ const startCountdown = () => {
 onMounted(() => {
   startCountdown();
 });
+
+const clearSessionData = () => {
+  localStorage.clear()
+};
+
+const logout = () => {
+
+  try {
+    clearSessionData();
+    router.push("/login")
+  } catch (error) {
+    console.error("Une erreur est survenue : ", error)
+  }
+
+}
 </script>
 
 <style scoped>
