@@ -9,7 +9,7 @@ export const adminRoutes = [
     {
         path: '/admin',
         name: 'Admin Dashboard',
-        meta: { requiresRole: "admin" },
+        meta : {authRequired : true} && {requestedRole : "admin"},
         component: dashboardAdmin,
         redirect: '/admin/dashboard-analytics',
         children: [

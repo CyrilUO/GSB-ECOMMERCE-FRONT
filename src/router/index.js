@@ -5,6 +5,7 @@ import { medicalEmployeeRoutes } from "@/router/medical-employee.js";
 import { salespersonRoutes } from "@/router/salesperson.js";
 import NotFound from "@/views/NotFound.vue";
 import Unauthorized from "@/views/Unauthorized.vue";
+import {nextTick} from "vue";
 
 const routes = [
     ...commonRoutes,
@@ -25,15 +26,11 @@ export default router;
 
 /* MiddleWare de test, code généré entièrement par  ChatGPT */
 /* MiddleWare = */
-// router.beforeEach((to, from, next) => {
-//     console.log("Navigating from:", from.fullPath || "No from path", "to:", to.fullPath);
-//     if (to.name === "NotFound" || to.name === "Unauthorized") {
-//         console.log("Not saving lastPage, invalid navigation");
-//     } else if (from.fullPath) {
-//         console.log("Saving lastPage:", from.fullPath); // Debugging
-//         sessionStorage.setItem("lastPage", from.fullPath);
-//     }
-//     next();
-// });
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.authRequired === true) {
+
+    }
+})
 
 

@@ -9,8 +9,7 @@ export const medicalEmployeeRoutes = [
     {
         path: '/medical-employee',
         name: 'Medical Employee',
-        // meta: { requiresRole: "medical-employee" },
-
+        meta : {authRequired : true} && {requestedRole : "medical-employee"},
         component: RedirectView,
         redirect: '/medical-employee/landing-page',
         children: [
