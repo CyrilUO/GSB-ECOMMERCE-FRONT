@@ -1,37 +1,57 @@
-# 🌐 GSB-ECOMMERCE-FRONT
-> Partie front de la plateforme ecommerce GSB
+# 🌟 Projet GSB Front (Headless) 🌟
 
-## ⚙️ Customize Configuration
+Bienvenue dans le projet **GSB Front (Headless)** ! Ce projet utilise **Vue.js** avec **TailwindCSS** pour le frontend et suit une architecture modulaire et bien organisée. 🚀
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## 🚀 Project Setup
+## 📁 Structure du Projet
 
-```sh
-npm install
-```
+Voici un aperçu de la structure principale du projet :
 
-### ⚡ Compile and Hot-Reload for Development
+### 🗂️ Répertoires
 
-```sh
-npm run dev
-```
+- **`src/assets`** : Contient les ressources statiques.
+    - 📷 `images` : Images pour le frontend.
+    - 🎨 `styles` : Fichiers CSS/Tailwind personnalisés.
 
-### 🛠️ Compile and Minify for Production
+- **`src/components`** : Composants réutilisables.
+    - **`common`** : Composants communs (ex. footer, CGU, etc.).
+    - **`dashboardComponent`** : Composants spécifiques au tableau de bord.
+    - **`medicalEmployeeComponent`** : Composants dédiés aux employés médicaux.
 
-```sh
-npm run build
-```
+- **`src/router`** : Fichiers de configuration des routes.
+    - 🔄 `admin.js`, `salesperson.js`, etc.
 
+- **`src/services`** : Gestion des appels API (Ex. utilisateurs, produits, commandes).
 
-### 📦 Tech Stack
-> Vue.js (Javascript)
+- **`src/views`** : Pages principales par rôle :
+    - 👑 `admin` : Pages pour les administrateurs.
+    - 💼 `medical-employee` : Pages pour les employés médicaux.
+    - 🛒 `salesperson` : Pages pour les commerciaux.
 
-> Tailwind CSS 
+### 📄 Fichiers Importants
 
+- **`App.vue`** : Point d'entrée principal de l'application.
+- **`tailwind.config.js`** : Configuration personnalisée de TailwindCSS.
+- **`vite.config.js`** : Configuration de Vite pour le bundling.
 
-### 🏗️ Architecture
->API Rest
+---
 
->Approche Headless 
+## 🚀 Installation et Lancement
 
+1. **Cloner le dépôt** :
+   ```bash
+   git clone <https://github.com/CyrilUO/GSB-ECOMMERCE-FRONT.git>
+   cd gsb_front
+
+2. **Installer les dépendance** :
+    ```bash
+    npm install
+
+3. **Lancer le projet en mode développement** :
+    ```bash
+    npm run dev
+
+4. **Lancer le projet en mode développement** :
+    ```bash
+    npm run dev
