@@ -5,7 +5,7 @@ import { medicalEmployeeRoutes } from "@/router/medical-employee.js";
 import { salespersonRoutes } from "@/router/salesperson.js";
 import NotFound from "@/views/NotFound.vue";
 import Unauthorized from "@/views/Unauthorized.vue";
-import {nextTick} from "vue";
+import {isAuthenticated, getUserRole} from "@/services/api.js";
 
 const routes = [
     ...commonRoutes,
@@ -24,13 +24,34 @@ const router = createRouter({
 
 export default router;
 
-/* MiddleWare de test, code généré entièrement par  ChatGPT */
-/* MiddleWare = */
+/* MiddleWare  */
+
+
 
 router.beforeEach((to, from, next) => {
-    if (to.meta.authRequired === true) {
+    const userRole = getUserRole()
+    const userAuthenticated = isAuthenticated()
 
+    // console.log("authToken présent ?", localStorage.getItem("authToken"));
+    // console.log("isAuthenticated ?", userAuthenticated);
+
+    if (to.meta.authRequired) {
+
+        if (!userAuthenticated) {
+            console.log("Erreur : authentifié ? ", userAuthenticated)
+
+            return next({ path: "/unauthorized" });
+        }
+
+        if (to.meta.requestedRole && !userRole().includes(to.meta.requestedRole)) {
+            console.log("Rôles actuels de l'utilisateur :", userRole);
+            console.log("Rôle requis par la route :", to.meta.requestedRole);
+            return next({ path: "/unauthorized" });
+        }
     }
-})
+
+    next();
+});
+
 
 

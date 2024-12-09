@@ -7,17 +7,60 @@ import orderValidation from "@/views/medical-employee/OrderValidation.vue";
 
 export const medicalEmployeeRoutes = [
     {
-        path: '/medical-employee',
-        name: 'Medical Employee',
-        meta : {authRequired : true} && {requestedRole : "medical-employee"},
+        path: "/medical-employee",
+        name: "Medical Employee",
+        meta: {
+            authRequired: true,
+            requestedRole: "medical-employee",
+        },
         component: RedirectView,
-        redirect: '/medical-employee/landing-page',
+        redirect: "/medical-employee/landing-page",
         children: [
-            { path: 'landing-page', component: landingPage, name: 'Landing Page' },
-            { path: 'carousel-products', component: carouselProducts, name: 'PLP' },
-            { path: 'product-details/:id', component: productDetails, name: 'PDP' },
-            { path: 'cart', component: cart, name: 'Cart Page' },
-            { path: 'order-validation', component: orderValidation, name: 'Order Validation' },
+            {
+                path: "landing-page",
+                component: landingPage,
+                name: "Landing Page",
+                meta: {
+                    authRequired: true,
+                    requestedRole: "medical-employee",
+                },
+            },
+            {
+                path: "carousel-products",
+                component: carouselProducts,
+                name: "PLP",
+                meta: {
+                    authRequired: true,
+                    requestedRole: "medical-employee",
+                },
+            },
+            {
+                path: "product-details/:id",
+                component: productDetails,
+                name: "PDP",
+                meta: {
+                    authRequired: true,
+                    requestedRole: "medical-employee",
+                },
+            },
+            {
+                path: "cart",
+                component: cart,
+                name: "Cart Page",
+                meta: {
+                    authRequired: true,
+                    requestedRole: "medical-employee",
+                },
+            },
+            {
+                path: "order-validation",
+                component: orderValidation,
+                name: "Order Validation",
+                meta: {
+                    authRequired: true,
+                    requestedRole: "medical-employee",
+                },
+            },
         ],
     },
 ];

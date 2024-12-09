@@ -10,7 +10,7 @@
 
         <form @submit.prevent="validateForm" class="flex flex-col justify-center bg-amber-50">
           <div class="mb-8 bg-amber-50">
-            <label for="email" class="block bg-amber-50 text-black">Entrez votre email</label>
+            <label for="email" class="block bg-amber-50 text-black">Email</label>
             <input
                 type="email"
                 id="email"
@@ -22,7 +22,7 @@
           </div>
 
           <div class="mb-4 bg-amber-50">
-            <label for="password" class="bg-amber-50 block text-black">Mot de passe :</label>
+            <label for="password" class="bg-amber-50 block text-black">Mot de passe</label>
             <input
                 type="password"
                 id="password"
