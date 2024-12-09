@@ -197,6 +197,7 @@ const getUsersData = async () => {
 
 
 const updateAndSaveUser = async (user) => {
+  const token = localStorage.getItem("authToken");
 
   try {
     const updatedUser = {
@@ -209,7 +210,12 @@ const updateAndSaveUser = async (user) => {
       userModifiedAt: user.userModifiedAt,
     };
 
-    const response = await axios.put(`http://localhost:8080/users/${user.userId}`, updatedUser);
+    const response = await axios.put(`http://localhost:8080/api/users/${user.userId}`, updatedUser, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json"// Ajouter le token ici
+      },
+    });
 
     if (response.status === 200) {
       messageStatus.value = `L'utilisateur dont l'id est ${user.userId} a été correctement mis à jour.`;

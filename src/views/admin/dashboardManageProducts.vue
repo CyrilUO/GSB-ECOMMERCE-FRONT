@@ -201,6 +201,7 @@ const saveAndUpdateProduct = async (product) => {
         {
           headers: {
             Authorization: `Bearer ${token}`, // Ajouter le token ici
+            Accept: "application/json"
           },
         }
     );
@@ -228,7 +229,9 @@ const deleteProduct = async (id) => {
     try {
       const response = await axios.delete(`http://localhost:8080/api/products/${id}`, {
         headers: {
+
           Authorization: `Bearer ${token}`, // Ajouter le token ici
+          Accept : "application/json"
         },
       });
       if (response.status === 200) {

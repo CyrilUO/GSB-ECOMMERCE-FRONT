@@ -21,7 +21,8 @@ import {useRouter} from "vue-router";
 const router = useRouter();
 
 const RedirectToPreviousPage = () => {
-  router.go(-1)
+  localStorage.clear();
+  router.push("/login")
 }
 
 

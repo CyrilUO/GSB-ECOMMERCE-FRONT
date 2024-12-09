@@ -18,10 +18,8 @@
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 
-
-/** TODO Ajouter la logique d'authentification de session, de  **/
 const router = useRouter();
-const countdown = ref(2);
+const countdown = ref(10);
 
 const startCountdown = () => {
   const interval = setInterval(() => {
@@ -29,7 +27,18 @@ const startCountdown = () => {
       countdown.value -= 1;
     } else {
       clearInterval(interval);
-      router.push("/");
+
+      const userRole = localStorage.getItem("userRole");
+
+      if (userRole === "admin") {
+        router.push("/admin");
+      } else if (userRole === "salesperson") {
+        router.push("/salesperson");
+      } else if (userRole === "medical-employee") {
+        router.push("/medical-employee");
+      } else {
+        router.push("/");
+      }
     }
   }, 1000);
 };
@@ -37,6 +46,7 @@ const startCountdown = () => {
 onMounted(() => {
   startCountdown();
 });
+
 </script>
 
 <style scoped>

@@ -1,8 +1,8 @@
 <template>
   <div>
+    <h1 class="text-2xl font-bold mb-4">Ajouter un Utilisateur</h1>
     <p v-if="successMessage" class="bg-green-500 text-white font-semibold rounded-lg py-2 px-4 text-center mb-2">{{ successMessage }}</p>
     <p v-else-if="failureMessage" class="bg-red-700 text-white font-semibold rounded-lg py-2 px-4 text-center mb-2">{{ failureMessage }}</p>
-    <h1 class="text-2xl font-bold mb-4">Ajouter un Utilisateur</h1>
     <form @submit.prevent="registerNewUser">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Nom de l'utilisateur</label>
@@ -56,11 +56,6 @@
         </routerLink>
       </div>
     </form>
-
-
-
-
-
   </div>
 </template>
 
@@ -85,6 +80,8 @@ const sanitizeInputUser = (string) => {
 
 
 const registerNewUser = async () => {
+
+  const token = localStorage.getItem("authToken")
   try {
     const newUser = {
       userSurname: sanitizeInputUser(userSurname.value),
@@ -94,7 +91,12 @@ const registerNewUser = async () => {
       userRole: userRole.value,
     };
 
-    await axios.post("http://localhost:8080/users", newUser);
+    await axios.post("http://localhost:8080/api/users", newUser, {
+      headers : {
+        Authorization : `Bearer ${token}`,
+        Accept : "application/json"
+      }
+    });
 
     userSurname.value = "";
     userName.value = "";

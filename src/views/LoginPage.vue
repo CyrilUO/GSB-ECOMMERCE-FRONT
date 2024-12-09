@@ -109,12 +109,9 @@ const validateForm = async () => {
       const userRole = parseJwt(token)?.userRole;
       console.log("Rôle utilisateur :", userRole);
 
-      if (userRole === "admin") {
-        await router.push("/admin");
-      } else if (userRole === "salesperson") {
-        await router.push("/salesperson");
-      } else if (userRole === "medical-employee") {
-        await router.push("/medical-employee");
+      if (userRole) {
+        localStorage.setItem("userRole", userRole);
+        await router.push("/login-success"); // Rediriger vers la page intermédiaire
       } else {
         loginError.value = "Rôle non attribué.";
         clearErrorAfterTimeout();
