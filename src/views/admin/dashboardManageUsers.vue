@@ -238,8 +238,15 @@ const updateAndSaveUser = async (user) => {
 
 const deleteUser = async (id) => {
   if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
+    const token = localStorage.getItem("authToken");
+
     try {
-      await axios.delete(`http://localhost:8080/users/${id}`);
+      await axios.delete(`http://localhost:8080/api/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json"// Ajouter le token ici
+        },
+      });
       messageStatus.value = `Utilisateur ${id} supprimé avec succès.`;
     } catch (error) {
       console.error("Erreur lors de la suppression :", error);
