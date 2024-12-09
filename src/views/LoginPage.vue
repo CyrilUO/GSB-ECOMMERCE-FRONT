@@ -43,8 +43,12 @@
           </button>
         </form>
 
-        <div v-if="loginError" class="mt-4 text-red-500 text-center">
-          <p>{{ loginError }}</p>
+        <!-- Conteneur de message d'erreur avec hauteur fixe -->
+        <div
+            class="text-wrap text-red-500 text-center mt-4"
+            style="min-height: 20px; line-height: 20px;"
+        >
+          <p v-if="loginError">{{ loginError }}</p>
         </div>
 
         <div class="flex justify-end bg-amber-50 mt-4">
@@ -61,8 +65,8 @@
 import {ref} from "vue";
 import axios from "axios";
 import {useRouter} from "vue-router";
-
 import FooterComponent from "@/components/common/footerComponent.vue";
+import {parseJwt} from "@/services/api.js";
 
 const userEmail = ref("");
 const userPassword = ref("");
@@ -73,21 +77,15 @@ const isLoading = ref(false);
 
 const router = useRouter();
 
-// TODO Implémenter la logique back pour faire fonctionner le formulaire : simple implémentation, vérification des correspondances entre les mots de passe  emails avec ceux tapés
-// TODO ajouter des timers pour reinitialiser les messages d'erreur ou d'injonction
-
-
 const validateForm = async () => {
   emailError.value = userEmail.value.trim() === "" || !/\S+@\S+\.\S+/.test(userEmail.value);
   passwordError.value = userPassword.value.trim() === "";
+  clearErrorAfterTimeout();
+
 
   if (emailError.value || passwordError.value) {
-
     loginError.value = "Veuillez corriger les erreurs.";
-    setTimeout(() => {
-      loginError.value = "";
-    }, 3000);
-
+    clearErrorAfterTimeout();
     return;
   }
 
@@ -95,13 +93,21 @@ const validateForm = async () => {
   loginError.value = "";
 
   try {
-    const apiResponse = await axios.post("http://localhost:8080/users", {
+    const apiResponse = await axios.post("http://localhost:8080/auth/login", {
       userEmail: userEmail.value,
       userPassword: userPassword.value,
     });
 
-    if (apiResponse.data.success) {
-      const userRole = apiResponse.data.role;
+    console.log("Réponse API :", apiResponse);
+
+    if (apiResponse.status === 200 && apiResponse.data) {
+      const token = apiResponse.data;
+      console.log("Token reçu :", token);
+
+      localStorage.setItem("authToken", token);
+
+      const userRole = parseJwt(token)?.userRole;
+      console.log("Rôle utilisateur :", userRole);
 
       if (userRole === "admin") {
         await router.push("/admin");
@@ -111,22 +117,29 @@ const validateForm = async () => {
         await router.push("/medical-employee");
       } else {
         loginError.value = "Rôle non attribué.";
+        clearErrorAfterTimeout();
       }
     } else {
       loginError.value = apiResponse.data.message || "Email ou mot de passe incorrect.";
-      setTimeout(() => {
-        loginError.value = "";
-      }, 3000);
+      clearErrorAfterTimeout();
     }
   } catch (error) {
-    loginError.value = "Erreur de connexion. Veuillez réessayer.";
+    if (error.response && error.response.status === 401) {
+      loginError.value = error.response.data; // Message du backend
+    } else {
+      loginError.value = "Erreur de connexion. Veuillez réessayer.";
+    }
     console.error("Erreur lors de la connexion :", error);
-    setTimeout(() => {
-      loginError.value = "";
-    }, 3000);
+    clearErrorAfterTimeout();
   } finally {
     isLoading.value = false;
   }
+};
+
+const clearErrorAfterTimeout = () => {
+  setTimeout(() => {
+    loginError.value = "";
+  }, 5000); // Efface le message après 5 secondes
 };
 </script>
 
@@ -186,6 +199,16 @@ body {
   width: 100%;
 }
 
+.text-wrap {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.text-wrap[hidden] {
+  opacity: 0;
+}
 </style>
+
+
+
 
 

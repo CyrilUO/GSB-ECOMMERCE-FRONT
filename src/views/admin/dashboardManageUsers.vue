@@ -178,8 +178,15 @@ const route = useRouter()
 
 
 const getUsersData = async () => {
+
+  const token = localStorage.getItem("authToken");
   try {
-    const response = await axios.get("http://localhost:8080/users");
+    const response = await axios.get("http://localhost:8080/api/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json"// Ajouter le token ici
+      },
+    });
     users.value = response.data
 
   } catch (error) {

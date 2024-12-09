@@ -5,7 +5,8 @@ import { medicalEmployeeRoutes } from "@/router/medical-employee.js";
 import { salespersonRoutes } from "@/router/salesperson.js";
 import NotFound from "@/views/NotFound.vue";
 import Unauthorized from "@/views/Unauthorized.vue";
-import {isAuthenticated, getUserRole} from "@/services/api.js";
+import {parseJwt} from "@/services/api.js";
+
 
 const routes = [
     ...commonRoutes,
@@ -26,26 +27,21 @@ export default router;
 
 /* MiddleWare  */
 
-
-
 router.beforeEach((to, from, next) => {
-    const userRole = getUserRole()
-    const userAuthenticated = isAuthenticated()
-
-    // console.log("authToken présent ?", localStorage.getItem("authToken"));
-    // console.log("isAuthenticated ?", userAuthenticated);
+    const token = localStorage.getItem("authToken");
+    const userAuthenticated = token !== null;
 
     if (to.meta.authRequired) {
-
         if (!userAuthenticated) {
-            console.log("Erreur : authentifié ? ", userAuthenticated)
-
+            console.warn("Utilisateur non authentifié.");
             return next({ path: "/unauthorized" });
         }
 
-        if (to.meta.requestedRole && !userRole().includes(to.meta.requestedRole)) {
-            console.log("Rôles actuels de l'utilisateur :", userRole);
-            console.log("Rôle requis par la route :", to.meta.requestedRole);
+        const userRole = parseJwt(token)?.userRole;
+        console.log("Rôle utilisateur :", userRole);
+
+        if (to.meta.requestedRole && userRole?.toLowerCase() !== to.meta.requestedRole) {
+            console.warn(`Accès refusé. Rôle requis : ${to.meta.requestedRole}`);
             return next({ path: "/unauthorized" });
         }
     }

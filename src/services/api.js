@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // Base URL de l'API
-const API_BASE_URL = "http://localhost:8080/api";
-const API_TOKEN_URL = "http://localhost:8080/auth/"
+const API_TOKEN_URL = "http://localhost:8080/auth/login"
 const CONTENT_TYPE = "application/json";
 
 const fetchToken = async () => {
@@ -26,11 +25,14 @@ const fetchToken = async () => {
 
 // Headers par défaut
 export const authApi = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: API_TOKEN_URL,
     headers: {
         "Content-Type": CONTENT_TYPE,
     }
 });
+
+
+
 
 authApi.interceptors.request.use(async (config) => {
     try {
@@ -48,17 +50,21 @@ authApi.interceptors.request.use(async (config) => {
 });
 
 
-// Instance Axios
-export const api = axios.create({
-    baseURL: API_BASE_URL,
-});
-
-
 export const isAuthenticated = () => {
 
     return localStorage.getItem('authToken') !== null;
 }
 
-export const getUserRole = () => {
-    return JSON.parse(localStorage.getItem("userRole")) || []; // Y stocker dans una array et pas un objet
-}
+
+export const parseJwt = (token) => {
+    try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = atob(base64);
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error("Erreur lors du parsing du JWT :", error);
+        return null;
+    }
+};
+

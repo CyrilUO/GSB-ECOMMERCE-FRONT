@@ -1,6 +1,11 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-4">Ajouter un Produit</h1>
+    <div class="flex justify-center">
+      <p v-if="successMessage"           class="bg-green-500 text-white font-semibold rounded-lg py-2 px-4 text-center mt-4 mb-4"
+      >{{ successMessage }}</p>
+      <p v-else-if="failureMessage" class="bg-red-500 text-white font-semibold rounded-lg py-2 px-4 text-center mb-4">{{ failureMessage }}</p>
+    </div>
     <form @submit.prevent="registerNewProduct">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Nom du produit</label>
@@ -31,8 +36,8 @@
         </router-link>
       </div>
     </form>
-    <p v-if="successMessage" class="text-green-500 mt-4">{{ successMessage }}</p>
-    <p v-else-if="failureMessage" class="text-red-700 mt-4">{{ failureMessage }}</p>
+
+
 
 
   </div>
@@ -56,6 +61,8 @@ const sanitizeStringInput = (string) => {
 }
 
 const registerNewProduct = async () => {
+  const token = localStorage.getItem("authToken")
+
   try {
     const newProduct = {
       productName: sanitizeStringInput(productName.value),
@@ -65,7 +72,12 @@ const registerNewProduct = async () => {
     };
 
     if (newProduct.productName && newProduct.productDescription) {
-      await axios.post('http://localhost:8080/products', newProduct);
+      await axios.post('http://localhost:8080/api/products', newProduct, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json"// Ajouter le token ici
+        },
+      });
 
       productName.value = '';
       productDescription.value = '';

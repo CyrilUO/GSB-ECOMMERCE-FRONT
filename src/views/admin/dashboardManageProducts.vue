@@ -169,19 +169,19 @@ const modifyProductStatus = (product) => {
 
 const getProductData = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/products", {
-      auth: {
-        username: "name",
-        password: "password",
+    const response = await axios.get("http://localhost:8080/api/products", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Token JWT
+        Accept: "application/json", // Ce que le frontend accepte comme réponse
       },
-      withCredentials : true
     });
-
     productItem.value = response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Erreur lors de la récupération des produits :", error);
   }
 };
+
+
 
 const saveAndUpdateProduct = async (product) => {
   try {
@@ -193,9 +193,16 @@ const saveAndUpdateProduct = async (product) => {
       productStock: product.productStock,
     };
 
+    const token = localStorage.getItem('authToken'); // Exemple avec localStorage
+
     const update = await axios.put(
-        `http://localhost:8080/products/${product.productId}`,
-        updatedValues
+        `http://localhost:8080/api/products/${product.productId}`,
+        updatedValues,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Ajouter le token ici
+          },
+        }
     );
 
     if (update.status === 200) {
@@ -215,21 +222,31 @@ const saveAndUpdateProduct = async (product) => {
     console.error(error);
   }
 };
-
 const deleteProduct = async (id) => {
+  const token = localStorage.getItem('authToken'); // Exemple avec localStorage
   if (confirm("Voulez-vous vraiment supprimer ce produit")) {
     try {
-      await axios.delete(`http://localhost:8080/products/${id}`);
-      messageStatus.value = `Produit ${id} supprimé avec succès`;
+      const response = await axios.delete(`http://localhost:8080/api/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Ajouter le token ici
+        },
+      });
+      if (response.status === 200) {
+        messageStatus.value = response.data; // Afficher le message retourné par le backend
+      } else {
+        messageStatus.value = "La suppression a échoué.";
+      }
       setTimeout(() => {
         messageStatus.value = "";
       }, 5000);
       await getProductData();
     } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la suppression :", error);
+      messageStatus.value = "Une erreur s'est produite lors de la suppression.";
     }
   }
 };
+
 
 const route = useRouter();
 
