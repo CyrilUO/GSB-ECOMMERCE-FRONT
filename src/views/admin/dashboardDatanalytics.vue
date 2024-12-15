@@ -52,7 +52,6 @@ const fetchProductStock = async () => {
     console.error("Erreur lors de la récupération des stocks des produits :", error);
   }
 };
-
 const setupUserChart = () => {
   const labels = userStats.value.map((item) => item.creation_date);
   const values = userStats.value.map((item) => item.user_count);
@@ -79,24 +78,30 @@ const setupUserChart = () => {
       responsive: true,
       maintainAspectRatio: false,
       layout: {
-        padding: {left: 10, right: 10, top: 10, bottom: 20}, // Padding global
+        padding: { left: 10, right: 10, top: 10, bottom: 20 },
       },
       scales: {
         x: {
-          title: {display: true, text: "Date"},
+          title: { display: true, text: "Date" },
           ticks: {
-            padding: 10, // Espacement supplémentaire pour les labels X
-            font: {size: 12},
+            padding: 10,
+            font: { size: 12 },
           },
         },
         y: {
-          title: {display: true, text: "Nombre d'utilisateurs"},
-          ticks: {stepSize: 1, callback: (value) => Math.floor(value)},
+          title: { display: true, text: "Nombre d'utilisateurs" },
+          beginAtZero: true, // Définit l'axe Y à partir de 0
+          min: 0,            // Valeur minimale à 0
+          ticks: {
+            stepSize: 1,     // Incréments de 1
+            callback: (value) => value, // Affiche les valeurs entières
+          },
         },
       },
     },
   });
 };
+
 
 
 const setupProductStockChart = () => {
