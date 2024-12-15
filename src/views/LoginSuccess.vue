@@ -19,7 +19,7 @@ import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 
 const router = useRouter();
-const countdown = ref(10);
+const countdown = ref(3);
 
 const startCountdown = () => {
   const interval = setInterval(() => {

@@ -1,48 +1,66 @@
 <template>
   <div class="grid grid-cols-2 gap-8">
-    <div class="bg-white shadow rounded-lg p-6">
-      <h3 class="text-lg font-semibold text-center mb-4">Nombre d’utilisateurs globaux</h3>
-      <div class="h-40">
+    <!-- Graphique des utilisateurs -->
+    <div class="bg-white shadow rounded-lg p-6 w-full h-96">
+      <h3 class="text-lg font-semibold text-center mb-4">Nouveaux utilisateurs par jour</h3>
+      <div class="h-full w-full">
         <canvas id="userChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Graphique des stocks de produits -->
+    <div class="bg-white shadow rounded-lg p-6 w-full h-96">
+      <h3 class="text-lg font-semibold text-center mb-4">État actuel des stocks</h3>
+      <div class="h-full w-full">
+        <canvas id="productStockChart"></canvas>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { Chart, registerables } from "chart.js";
+import {onMounted, ref} from "vue";
+import {Chart, registerables} from "chart.js";
+import {getCurrentProductStockRq} from "@/services/products/productService.js";
+import {getDailyUsersStatsRequest} from "@/services/users/userService.js";
+
 Chart.register(...registerables);
 
-// Générer des données mockées
-const generateMockData = () => {
-  const days = 10; // Nombre de jours simulés
-  const data = [];
-  const today = new Date();
+const userChart = ref(null);
+const productStockChart = ref(null);
 
-  for (let i = 0; i < days; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
+// Données pour les graphiques
+const userStats = ref([]);
+const productStock = ref([]);
 
-    data.unshift({
-      date: date.toISOString().split("T")[0], // Format YYYY-MM-DD
-      count: Math.floor(Math.random() * 50) + 1, // Nombre aléatoire d'utilisateurs
-    });
+// Récupération des statistiques des utilisateurs
+const fetchUserStats = async () => {
+  try {
+    const response = await getDailyUsersStatsRequest();
+    userStats.value = response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des statistiques des utilisateurs :", error);
   }
-
-  return data;
 };
 
-const chart = ref(null);
+// Récupération des stocks des produits
+const fetchProductStock = async () => {
+  try {
+    const response = await getCurrentProductStockRq();
+    productStock.value = response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des stocks des produits :", error);
+  }
+};
 
-const setupChart = () => {
-  const mockData = generateMockData();
-
-  const labels = mockData.map((item) => item.date); // Extraire les dates
-  const values = mockData.map((item) => item.count); // Extraire les comptes
+const setupUserChart = () => {
+  const labels = userStats.value.map((item) => item.creation_date);
+  const values = userStats.value.map((item) => item.user_count);
 
   const ctx = document.getElementById("userChart").getContext("2d");
-  chart.value = new Chart(ctx, {
+  if (userChart.value) userChart.value.destroy();
+
+  userChart.value = new Chart(ctx, {
     type: "line",
     data: {
       labels: labels,
@@ -53,44 +71,99 @@ const setupChart = () => {
           borderColor: "rgba(75, 192, 192, 1)",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           fill: true,
-          tension: 0.4, // Pour une courbe douce
+          tension: 0.4,
         },
       ],
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: true },
+      maintainAspectRatio: false,
+      layout: {
+        padding: {left: 10, right: 10, top: 10, bottom: 20}, // Padding global
       },
       scales: {
         x: {
-          title: {
-            display: true,
-            text: "Date", // Titre de l'axe X
-          },
+          title: {display: true, text: "Date"},
           ticks: {
-            display: false, // Masque les ticks (valeurs comme "2024-01-25")
+            padding: 10, // Espacement supplémentaire pour les labels X
+            font: {size: 12},
           },
         },
         y: {
-          title: {
-            display: true,
-            text: "Nombre d'utilisateurs",
-          },
-          ticks: {
-            display: false, // Masque les ticks (valeurs comme "2024-01-25")
-          },
+          title: {display: true, text: "Nombre d'utilisateurs"},
+          ticks: {stepSize: 1, callback: (value) => Math.floor(value)},
         },
       },
     },
   });
 };
 
-onMounted(() => {
-  setupChart();
+
+const setupProductStockChart = () => {
+  const labels = productStock.value.map((item) => item.product_name);
+  const values = productStock.value.map((item) => item.product_stock);
+
+  const ctx = document.getElementById("productStockChart").getContext("2d");
+  if (productStockChart.value) productStockChart.value.destroy();
+
+  productStockChart.value = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Quantité en stock",
+          data: values,
+          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
+          barPercentage: 0.6,
+          categoryPercentage: 0.8,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {left: 10, right: 10, top: 10, bottom: 20}, // Padding global
+      },
+      scales: {
+        x: {
+          title: {display: true, text: "Produits"},
+          ticks: {
+            padding: 10, // Espacement supplémentaire pour les labels X
+            font: {size: 12},
+            maxRotation: 0,
+            minRotation: 0,
+          },
+          grid: {display: false}, // Cache la grille verticale
+        },
+        y: {
+          title: {display: true, text: "Quantité en stock"},
+          ticks: {callback: (value) => Math.floor(value)},
+        },
+      },
+    },
+  });
+};
+
+
+// Chargement des données et initialisation des graphiques
+onMounted(async () => {
+  await fetchUserStats();
+  await fetchProductStock();
+
+  setupUserChart();
+  setupProductStockChart();
 });
 </script>
 
 <style>
-/* Ajouter des styles si nécessaire */
+/* Ajustement pour les conteneurs */
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
 </style>

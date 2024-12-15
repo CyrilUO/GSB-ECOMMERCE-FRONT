@@ -165,10 +165,13 @@
 import {onMounted, ref} from "vue";
 import {CheckCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import {useRouter} from "vue-router";
-import axios from "axios";
+
+import {getUsersRequest, updateUserRequest , deleteUserRequest} from "@/services/users/userService.js";
 
 const users = ref([])
 const messageStatus = ref('');
+
+
 
 const modifyUserStatus = (user) => {
   user.isGettingModified = true;
@@ -179,26 +182,16 @@ const route = useRouter()
 
 const getUsersData = async () => {
 
-  const token = localStorage.getItem("authToken");
   try {
-    const response = await axios.get("http://localhost:8080/api/users", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json"// Ajouter le token ici
-      },
-    });
+    const response = await getUsersRequest()
     users.value = response.data
-
   } catch (error) {
     console.error("Erreur lors de la récuperation des donnees :", error)
   }
 
 }
 
-
 const updateAndSaveUser = async (user) => {
-  const token = localStorage.getItem("authToken");
-
   try {
     const updatedUser = {
       userId: user.userId,
@@ -207,46 +200,33 @@ const updateAndSaveUser = async (user) => {
       userEmail: user.userEmail,
       userPassword: user.userPassword,
       userRole: user.userRole,
-      userModifiedAt: user.userModifiedAt,
+      userModifiedAt: new Date().toISOString(), // Ajouter la date actuelle de modification
     };
 
-    const response = await axios.put(`http://localhost:8080/api/users/${user.userId}`, updatedUser, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json"// Ajouter le token ici
-      },
-    });
+    const response = await updateUserRequest(user.userId, updatedUser);
 
     if (response.status === 200) {
-      messageStatus.value = `L'utilisateur dont l'id est ${user.userId} a été correctement mis à jour.`;
+      messageStatus.value = `L'utilisateur dont l'ID est ${user.userId} a été mis à jour avec succès.`;
       user.isGettingModified = false;
+
       setTimeout(() => {
         messageStatus.value = "";
       }, 5000);
-      /* On refetch les données users pour y mettre à jour dans le front */
-      await getUsersData();
+
+      await getUsersData(); // Rafraîchir la liste des utilisateurs
     } else {
-      messageStatus.value = `Erreur lors de la modification de l'utilisateur ${user.userId}.`;
-      setTimeout(() => {
-        messageStatus.value = "";
-      }, 5000);
+      messageStatus.value = `Erreur : Impossible de mettre à jour l'utilisateur ${user.userId}.`;
     }
   } catch (error) {
-    console.error(error)
+    console.error("Erreur lors de la mise à jour :", error);
+    messageStatus.value = "Une erreur s'est produite lors de la mise à jour.";
   }
-}
+};
 
 const deleteUser = async (id) => {
   if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
-    const token = localStorage.getItem("authToken");
-
     try {
-      await axios.delete(`http://localhost:8080/api/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json"// Ajouter le token ici
-        },
-      });
+      await deleteUserRequest(id);
       messageStatus.value = `Utilisateur ${id} supprimé avec succès.`;
     } catch (error) {
       console.error("Erreur lors de la suppression :", error);

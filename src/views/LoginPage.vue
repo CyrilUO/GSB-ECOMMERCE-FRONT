@@ -102,7 +102,7 @@
       <div v-if="emailSent" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div class="bg-white rounded-lg p-6 shadow-lg max-w-md w-full text-center">
           <h2 class="text-xl font-bold mb-4">Email envoyé !</h2>
-          <p class="mb-4">Un email de réinitialisation a été envoyé à {{ resetPasswordEmail }}</p>
+          <p class="mb-4">Un email de réinitialisation a été envoyé à un administrateur, il vous contactera dans les plus brefs delais</p>
           <button
               @click="closeConfirmation"
               class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"

@@ -64,6 +64,7 @@
 import {ref} from "vue";
 import axios from "axios";
 import DOMPurify from 'dompurify';
+import {addUserRequest} from "@/services/users/userService.js";
 
 const userSurname = ref('')
 const userName = ref('')
@@ -79,9 +80,8 @@ const sanitizeInputUser = (string) => {
 }
 
 
-const registerNewUser = async () => {
+const registerNewUser = async (user) => {
 
-  const token = localStorage.getItem("authToken")
   try {
     const newUser = {
       userSurname: sanitizeInputUser(userSurname.value),
@@ -91,12 +91,10 @@ const registerNewUser = async () => {
       userRole: userRole.value,
     };
 
-    await axios.post("http://localhost:8080/api/users", newUser, {
-      headers : {
-        Authorization : `Bearer ${token}`,
-        Accept : "application/json"
-      }
-    });
+   const response = await addUserRequest(newUser);
+
+   console.log("Nouvel utilisateur ajouté data :", response)
+
 
     userSurname.value = "";
     userName.value = "";

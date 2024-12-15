@@ -159,9 +159,11 @@ import {CheckCircleIcon} from "@heroicons/vue/24/outline";
 import {ref, onMounted} from "vue";
 import axios from "axios";
 import {useRouter} from "vue-router";
+import {getProductsRequest, updateProductRequest, deleteProductRequest, addProductRequest} from "@/services/products/productService.js";
 
 const productItem = ref([]);
 const messageStatus = ref("");
+
 
 const modifyProductStatus = (product) => {
   product.isGettingModified = true;
@@ -169,12 +171,7 @@ const modifyProductStatus = (product) => {
 
 const getProductData = async () => {
   try {
-    const response = await axios.get("http://localhost:8080/api/products", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Token JWT
-        Accept: "application/json", // Ce que le frontend accepte comme réponse
-      },
-    });
+    const response = await getProductsRequest();
     productItem.value = response.data;
   } catch (error) {
     console.error("Erreur lors de la récupération des produits :", error);
@@ -223,19 +220,14 @@ const saveAndUpdateProduct = async (product) => {
     console.error(error);
   }
 };
+
 const deleteProduct = async (id) => {
-  const token = localStorage.getItem('authToken'); // Exemple avec localStorage
   if (confirm("Voulez-vous vraiment supprimer ce produit")) {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/products/${id}`, {
-        headers: {
+      const response = await deleteProductRequest(id);
 
-          Authorization: `Bearer ${token}`, // Ajouter le token ici
-          Accept : "application/json"
-        },
-      });
       if (response.status === 200) {
-        messageStatus.value = response.data; // Afficher le message retourné par le backend
+        messageStatus.value = `Le produit à l'id ${id} a été supprimé avec succès`;
       } else {
         messageStatus.value = "La suppression a échoué.";
       }
