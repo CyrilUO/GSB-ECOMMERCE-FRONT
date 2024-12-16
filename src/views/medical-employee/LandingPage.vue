@@ -1,28 +1,80 @@
 <template>
-  <div class="h-screen overflow-hidden bg-gray-100">
+  <div class="h-screen overflow-hidden bg-gray-50">
 
-    <NavBar/>
-    <header class="relative h-full">
-      <img src="@/assets/images/medicament-landing-min.jpg" alt="background-med-images"
-           class="w-full h-full object-cover">
+    <!-- NavBar Component -->
+    <NavBar />
 
-      <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 md:px-0">
-        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4">
-          BIENVENUE SUR<br> LA PLATEFORME<br> GSB ECOMMERCE
-        </h1>
+    <!-- Hero Section -->
+    <header class="relative h-full w-full">
 
-        <router-link to="/medical-employee/carousel-products"
-                     class="w-60 py-2 bg-blue-700 rounded-2xl text-white text-lg hover:bg-blue-800 focus:outline-none md:w-44 lg:w-52">
-          DECOUVRIR NOS PRODUITS
-        </router-link>
+      <!-- Background Image -->
+      <div class="absolute inset-0">
+        <img
+            src="@/assets/images/medicament-landing-min.jpg"
+            alt="background-med-images"
+            class="w-full h-full object-cover filter brightness-75"
+        />
+      </div>
+
+      <!-- Glassmorphism Card -->
+      <div class="relative z-10 flex items-center justify-center h-full px-6">
+        <div
+            class="glass-card max-w-3xl w-full p-8 md:p-12 rounded-3xl text-center text-white shadow-lg animate-fade-in-up"
+        >
+          <!-- Title -->
+          <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+            BIENVENUE SUR<br />
+            <span class="text-blue-500">LA PLATEFORME</span><br />
+            <span class="text-blue-800">GSB ECOMMERCE</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-lg md:text-2xl mb-8 opacity-90">
+             Explorez notre large gamme de produits médicaux pour professionnels de santé, avec une expérience utilisateur fluide et moderne.
+          </p>
+
+          <!-- CTA Button -->
+          <router-link
+              to="/medical-employee/carousel-products"
+              class="inline-block py-3 px-8 bg-blue-600 rounded-full text-lg font-semibold hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105"
+          >
+            🚀 Découvrir nos produits
+          </router-link>
+        </div>
       </div>
     </header>
   </div>
 </template>
 
 <script setup>
-import NavBar from "../../components/medicalEmployeeComponent/navbar.vue"
+import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
 </script>
 
 <style scoped>
+/* Glassmorphism Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.15); /* Transparence légère */
+  border: 1px solid rgba(255, 255, 255, 0.18); /* Bordure subtile */
+  backdrop-filter: blur(10px); /* Effet de flou */
+  -webkit-backdrop-filter: blur(10px); /* Compatibilité Safari */
+  border-radius: 20px; /* Coins arrondis */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  color: #ffffff; /* Texte blanc pour contraste */
+}
+
+/* Animation Fade In Up */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s ease-out forwards;
+}
 </style>

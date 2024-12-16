@@ -80,31 +80,50 @@
 import {ref} from "vue";
 
 import NavBar from '../../components/medicalEmployeeComponent/navbar.vue'
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
+import { onMounted } from "vue";
+import { getOrderDetails } from "@/services/order/orderService.js"
 
 const router = useRouter()
+const route = useRoute();
 
 
-const userName = ref("Jean Dupont");
-const orderId = ref(12345);
-const orderCreatedAt = ref("2024-12-05");
-const orderStatus = ref("Confirmée");
-const orderTotalPrice = ref();
-const deliveryAddress = ref("123 Rue Principale, 75001 Paris, France");
-const companyName = ref("PharmaLivraison");
-const products = ref([
-  {product_name: "PROXINOL", quantity: 2, product_price: 100},
-  {product_name: "VITAMAX", quantity: 1, product_price: 50.5},
-  {product_name: "VITAM", quantity: 7, product_price: 20.5},
-  {product_name: "VITAMAX", quantity: 2, product_price: 10.5},
-]);
 
-const calculateTotalPrice = (products) => {
-
-}
 const goToHome = () => {
   router.push("/medical-employee/landing-page")
-}
+};
+
+
+
+const companyName = ref("GSB");
+const orderId = ref(route.query.orderId || ""); // ID récupéré dans l'URL
+const products = ref([]);
+const orderTotalPrice = ref(0);
+const orderStatus = ref("");
+const orderCreatedAt = ref("");
+const deliveryAddress = ref("");
+const userName = ref("");
+
+const downloadPDF = () => {
+  alert("Fonction de téléchargement PDF en cours de développement.");
+};
+
+onMounted(async () => {
+  try {
+    // Récupérer les détails de la commande depuis l'API
+    const response = await getOrderDetails(orderId.value);
+    const orderData = response.data;
+
+    products.value = orderData.items;
+    orderTotalPrice.value = orderData.orderTotalPrice;
+    orderStatus.value = orderData.status;
+    orderCreatedAt.value = orderData.createdAt;
+    deliveryAddress.value = orderData.deliveryAddress || deliveryAddress.value;
+    userName.value = orderData.userName || userName.value;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des détails de la commande :", error);
+  }
+});
 
 </script>
 

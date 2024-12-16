@@ -1,153 +1,195 @@
 <template>
-  <NavBar />
-  <div class="container mx-auto p-4">
-    <div v-if="product" class="flex items-center space-x-8">
-      <!-- Image du produit -->
-      <img
-          :src="product.productImage"
-          :alt="product.productName"
-          class="w-40 h-40 rounded-lg shadow"
-      />
+  <NavBar/>
+  <div class=" mx-auto p-6 flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 to-blue-300">
+    <!-- Card Produit -->
+    <div
+        v-if="product"
+        class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center space-y-4"
+    >
+      <!-- Image -->
+      <div class="w-32 h-32 rounded-lg overflow-hidden shadow-md">
+        <img
+            :src="product.productImage || 'https://via.placeholder.com/150/cccccc/ffffff?text=No+Image'"
+            :alt="product.productName"
+            class="w-full h-full object-cover"
+        />
+      </div>
 
-      <!-- Détails du produit -->
-      <div class="border p-4 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold">{{ product.productName }}</h1>
-        <p class="mt-2 text-gray-600">ID : {{ product.productId }}</p>
-        <p class="mt-2 text-gray-600">{{ product.productDescription }}</p>
-        <p class="mt-4 text-lg font-semibold text-green-600">
-          Prix unitaire : {{ product.productPrice }}€
-        </p>
-        <p class="mt-2 text-gray-800">Stock disponible : {{ product.productStock }}</p>
+      <!-- Infos Produit -->
+      <div class="text-center space-y-2">
+        <h1 class="text-2xl font-bold text-gray-800">{{ product.productName }}</h1>
+        <p class="text-gray-500 text-sm">{{ product.productDescription }}</p>
+        <p class="text-green-500 font-semibold">Prix unitaire : {{ product.productPrice }}€</p>
+        <p class="text-gray-700 text-sm font-medium">Stock disponible : {{ productStock }}</p>
+      </div>
 
-        <!-- Gestion de la quantité -->
-        <div class="mt-4">
-          <label for="quantity" class="font-medium">Quantité :</label>
-          <div class="flex items-center space-x-4 mt-2">
-            <button
-                class="px-3 py-1 border rounded hover:bg-gray-200"
-                @click="decreaseQuantityAndStock"
-            >
-              -
-            </button>
-            <span class="font-medium">{{ quantity }}</span>
-            <button
-                class="px-3 py-1 border rounded hover:bg-gray-200"
-                @click="increaseQuantityAndStock"
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <!-- Calcul du prix total -->
-        <p class="mt-4 text-lg font-bold">
-          Prix total : {{ (quantity * product.productPrice).toFixed(2) }}€
-        </p>
-
-        <!-- Bouton Ajouter au panier -->
+      <!-- Gestion Quantité -->
+      <div class="flex items-center space-x-4">
         <button
-            class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center shadow"
+            @click="decreaseQuantity"
+            :disabled="quantity <= 1"
+        >
+          <span class="text-gray-700 font-bold">-</span>
+        </button>
+
+        <input
+            type="number"
+            v-model.number="quantity"
+            @input="onQuantityInput"
+            class="w-16 text-center border rounded-md shadow"
+            min="1"
+            :max="productStock"
+        />
+
+        <button
+            class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center shadow"
+            @click="increaseQuantity"
+            :disabled="quantity >= productStock"
+        >
+          <span class="text-gray-700 font-bold">+</span>
+        </button>
+      </div>
+
+      <!-- Prix Total -->
+      <p class="text-lg font-semibold text-blue-600">
+        Prix total : {{ totalPrice.toFixed(2) }}€
+      </p>
+
+      <!-- Boutons Action -->
+      <div class="flex space-x-4 w-full">
+        <button
+            class="flex-1 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium rounded-full shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-300"
             @click="addToCart"
         >
-          Ajouter au panier
+          Ajouter à la commande
+        </button>
+        <button
+            class="flex-1 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white font-medium rounded-full shadow-md hover:from-red-600 hover:to-red-800 transition-all duration-300"
+            @click="redirectToPreviousPage"
+        >
+          Retour
         </button>
       </div>
     </div>
-    <div v-else>
-      <p>Chargement des informations du produit...</p>
-    </div>
+
+    <!-- Chargement -->
+    <div v-else-if="loading" class="text-gray-500">Chargement...</div>
+
+    <!-- Erreur -->
+    <div v-else class="text-red-500">Produit introuvable.</div>
   </div>
 </template>
 
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import {ref, onMounted} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
+import {getProductByIdRequest} from "@/services/products/productService.js";
+import { useCartStore } from "@/store/cartStore.js";
+import {storeToRefs} from "pinia";
 
-// Utilisation de useRoute pour récupérer les paramètres de la route
+
 const route = useRoute();
-const productId = Number(route.params.id); // Récupération et conversion de l'ID en nombre
+const router = useRouter();
 
-// Initialisation des produits disponibles (vous pouvez remplacer cette liste par des données dynamiques)
-const products = ref([
-  {
-    productId: 1,
-    productImage: "https://via.placeholder.com/100",
-    productName: "PROXINOL",
-    productDescription:
-        "Produit recommandé dans le traitement contre les douleurs cutanées et les infections de niveau 1.",
-    productPrice: 100,
-    productStock: 200,
-  },
-  {
-    productId: 2,
-    productImage: "https://via.placeholder.com/100",
-    productName: "MEDICORP",
-    productDescription:
-        "Aide à combattre les infections respiratoires légères et à soulager les irritations.",
-    productPrice: 150,
-    productStock: 150,
-  },
-  {
-    productId: 3,
-    productImage: "https://via.placeholder.com/100",
-    productName: "VITAMAX",
-    productDescription:
-        "Complément alimentaire pour renforcer le système immunitaire et réduire la fatigue.",
-    productPrice: 120,
-    productStock: 250,
-  },
-]);
+const productId = Number(route.params.id);
 
-// Produit sélectionné
 const product = ref(null);
+const loading = ref(true);
+const quantity = ref(1); // Quantité par défaut
+const productStock = ref(0); // Stock dynamique
+const totalPrice = ref(0); // Prix total calculé
 
-// Quantité sélectionnée par l'utilisateur
-const quantity = ref(1);
-
-// Récupération des données du produit en fonction de l'ID
-onMounted(() => {
-  product.value = products.value.find((product) => product.productId === productId);
-  if (!product.value) {
-    console.error("Produit introuvable");
+const fetchProductDetails = async () => {
+  try {
+    const response = await getProductByIdRequest(productId);
+    if (response && response.data) {
+      product.value = {
+        productId: response.data.productId,
+        productImage: response.data.productImage || "https://via.placeholder.com/150/cccccc/ffffff?text=No+Image",
+        productName: response.data.productName,
+        productDescription: response.data.productDescription,
+        productPrice: response.data.productPrice,
+        productStock: response.data.productStock,
+      };
+      productStock.value = response.data.productStock;
+      updateTotalPrice();
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération du produit :", error.message);
+    product.value = null;
+  } finally {
+    loading.value = false;
   }
-});
+};
 
-// Augmenter la quantité
-const increaseQuantityAndStock = () => {
-  if (product.value.productStock > 1) {
+const updateTotalPrice = () => {
+  totalPrice.value = quantity.value * product.value.productPrice;
+};
+
+const increaseQuantity = () => {
+  if (quantity.value < productStock.value) {
     quantity.value++;
-    product.value.productStock--;
-  } else {
-    alert("Produit en rupture de stock");
+    productStock.value--;
+    updateTotalPrice();
   }
 };
 
-// Diminuer la quantité
-const decreaseQuantityAndStock = () => {
-  if (quantity.value > 1 && product.value.productStock > 0) {
+const decreaseQuantity = () => {
+  if (quantity.value > 1) {
     quantity.value--;
-    product.value.productStock++;
-  } else {
-    alert("La quantité choisie ne peut être inférieure à 1");
+    productStock.value++;
+    updateTotalPrice();
   }
 };
 
-// Ajouter au panier
-const addToCart = () => {
-  if (product.value) {
-    alert(
-        `${quantity.value} ${product.value.productName}(s) ajouté(s) au panier !`
-    );
-  } else {
-    alert("Aucun produit sélectionné.");
+const onQuantityInput = () => {
+  if (quantity.value < 1) {
+    quantity.value = 1;
+  } else if (quantity.value > productStock.value) {
+    quantity.value = productStock.value;
   }
+  updateTotalPrice();
 };
+
+const cartStore = useCartStore();
+const { cart } = storeToRefs(cartStore);
+
+
+const addToCart = () => {
+  cartStore.addToCart(product.value, quantity.value);
+  alert(`${quantity.value} x ${product.value.productName} ajouté(s) à la commande !`);
+  router.push("/medical-employee/cart");
+};
+
+const redirectToPreviousPage = () => {
+  router.go(-1)
+}
+
+onMounted(fetchProductDetails);
 </script>
 
 
+<style scoped>
+/* Retirer les flèches de l'input number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-<style>
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>
+
+

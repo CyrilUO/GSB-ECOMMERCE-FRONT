@@ -15,6 +15,8 @@ const fetchToken = async () => {
         const response = await axios.get(API_TOKEN_URL);
         const token = response.data.token;
         localStorage.setItem("authToken", token);
+        console.log("Payload JWT :", token);
+
         return token;
     } catch (err) {
         console.error("Erreur lors de la récupération du token :", err.message);
@@ -30,6 +32,7 @@ export const authApi = axios.create({
 
 authApi.interceptors.request.use(async (config) => {
     const token = await fetchToken();
+
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

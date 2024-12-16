@@ -4,11 +4,13 @@ import router from "@/router/index.js";
 
 import './assets/styles/main.css';
 
-import axios from "axios";
+import {createPinia} from "pinia";
 
 const app = createApp(App)
 
+const pinia = createPinia();
 
+app.use(pinia)
 app.use(router)
 
 
