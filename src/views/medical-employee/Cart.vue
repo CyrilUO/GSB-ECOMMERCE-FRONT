@@ -3,7 +3,7 @@
   <div class="container mx-auto p-6">
     <!-- Titre -->
     <h1 v-if="orders && orders.length" class="text-2xl font-bold mb-4">
-      Résumé de la commande numéro
+      Résumé de la commande numéro order.orderID
     </h1>
 
     <!-- Message si le panier est vide -->
@@ -125,17 +125,17 @@ onMounted(async () => {
   await userStore.fetchCurrentUser(); // Récupérer les informations utilisateur
 });
 
-// Supprimer un produit du panier
 const removeItem = (productId) => {
+  console.log("ID du produit à supprimer :", productId);
   cartStore.removeFromCart(productId);
 };
+
 
 // Redirection vers la page des produits
 const backToCarouselProduct = () => {
   router.push("/medical-employee/carousel-products");
 };
 
-// Mapper les adresses en ID pour le backend
 const getAddressId = (city) => {
   switch (city) {
     case "Paris":
@@ -151,35 +151,29 @@ const getAddressId = (city) => {
   }
 };
 
-// Finaliser la commande
 const finalizeOrder = async () => {
   if (!selectedAddress.value) {
     alert("Veuillez sélectionner une adresse avant de finaliser la commande !");
     return;
   }
 
+  console.log("Contenu du panier :", orders);
+  console.log("Adresse sélectionnée :", selectedAddress.value);
+
+  const payload = {
+    userId: userId,
+    deliveryAddressId: getAddressId(selectedAddress.value),
+    orderTotalPrice: totalOrderPrice,
+    items: orders.map((item) => ({
+      productId: item.product.productId,
+      orderedItemsQuantity: item.quantity,
+      orderedItemsUnitPrice: item.product.productPrice,
+    })),
+  };
+
+  console.log("Payload envoyé :", payload); // Vérifie ici !
   try {
-    if (!userId) {
-      alert("Impossible de récupérer l'utilisateur. Veuillez vous reconnecter.");
-      return;
-    }
-
-    // Création du payload
-    const payload = {
-      userId: userId,
-      deliveryAddressId: getAddressId(selectedAddress.value),
-      orderTotalPrice: totalOrderPrice,
-      items: orders.map((item) => ({
-        productId: item.product.productId,
-        orderedItemsQuantity: item.quantity,
-        orderedItemsUnitPrice: item.product.productPrice,
-      })),
-    };
-
-    // Envoi des données au backend
     const response = await createOrder(payload);
-
-    // Rediriger vers la page de validation
     const orderId = response.data.orderId;
     await router.push({
       path: "/medical-employee/order-validation",
@@ -190,6 +184,7 @@ const finalizeOrder = async () => {
     alert("Une erreur est survenue lors de la finalisation de votre commande.");
   }
 };
+
 
 // Redirection si le panier est vide
 watch(

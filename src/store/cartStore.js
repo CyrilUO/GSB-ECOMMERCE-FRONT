@@ -15,10 +15,24 @@ export const useCartStore = defineStore("cart", () => {
         }
     };
 
-    // Supprimer un produit du panier
+    console.log("Panier avant suppression :", cart.value);
+
+
     const removeFromCart = (productId) => {
-        cart.value = cart.value.filter((item) => item.product.productId !== productId);
+        console.log("ID du produit à supprimer :", productId);
+
+        const index = cart.value.findIndex(
+            (item) => String(item.product.productId) === String(productId)
+        );
+        if (index !== -1) {
+            cart.value.splice(index, 1); // Supprime l'élément directement
+        }
+        console.log("Panier après suppression :", cart.value);
     };
+
+
+
+
 
     // Prix total
     const totalPrice = computed(() =>

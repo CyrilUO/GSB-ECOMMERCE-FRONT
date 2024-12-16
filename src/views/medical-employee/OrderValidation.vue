@@ -114,11 +114,13 @@ onMounted(async () => {
     const response = await getOrderDetails(orderId.value);
     const orderData = response.data;
 
+    console.log("Les données sont :", orderData)
+
     products.value = orderData.items;
     orderTotalPrice.value = orderData.orderTotalPrice;
     orderStatus.value = orderData.status;
     orderCreatedAt.value = orderData.createdAt;
-    deliveryAddress.value = orderData.deliveryAddress || deliveryAddress.value;
+    deliveryAddress.value = orderData.deliveryAddressId || deliveryAddress.value;
     userName.value = orderData.userName || userName.value;
   } catch (error) {
     console.error("Erreur lors de la récupération des détails de la commande :", error);

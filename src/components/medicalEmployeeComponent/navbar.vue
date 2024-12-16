@@ -5,9 +5,11 @@
         <img src="@/assets/images/logo_gsb.png" alt="logo" class="h-10 mr-4" />
       </div>
       <div class="flex space-x-8 text-sm md:text-lg">
+        <router-link to="/medical-employee/landing-page" class="hover:underline">Accueil</router-link>
+
         <router-link to="/medical-employee/carousel-products" class="hover:underline">Nos produits</router-link>
         <router-link to="/medical-employee/cart" class="hover:underline">Panier</router-link>
-        <router-link to="/medical-employee/order-validation" class="hover:underline">Commander</router-link>
+        <router-link to="/medical-employee/order-validation" class="hover:underline">Résumé Commandes</router-link>
         <div>
           <router-link to="/logout" class="hover:underline flex items-center">
             Déconnexion
