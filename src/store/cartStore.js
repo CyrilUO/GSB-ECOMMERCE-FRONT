@@ -1,4 +1,3 @@
-// src/store/cartStore.js
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
@@ -7,37 +6,38 @@ export const useCartStore = defineStore("cart", () => {
 
     // Ajouter un produit au panier
     const addToCart = (product, quantity) => {
+        console.log("Produit ajouté :", product, "Quantité :", quantity);
         const existingItem = cart.value.find((item) => item.product.productId === product.productId);
         if (existingItem) {
-            existingItem.quantity += quantity; // Mettre à jour la quantité
+            console.log("Produit existant, mise à jour de la quantité");
+            existingItem.quantity += quantity;
         } else {
+            console.log("Ajout d'un nouveau produit au panier");
             cart.value.push({ product, quantity });
         }
+        console.log("Panier mis à jour :", cart.value);
     };
-
-    console.log("Panier avant suppression :", cart.value);
-
 
     const removeFromCart = (productId) => {
         console.log("ID du produit à supprimer :", productId);
-
-        const index = cart.value.findIndex(
-            (item) => String(item.product.productId) === String(productId)
-        );
+        const index = cart.value.findIndex((item) => String(item.product.productId) === String(productId));
         if (index !== -1) {
-            cart.value.splice(index, 1); // Supprime l'élément directement
+            cart.value.splice(index, 1);
+            console.log("Produit supprimé. Panier mis à jour :", cart.value);
         }
-        console.log("Panier après suppression :", cart.value);
     };
 
+    const applyQuantityChosenToStock = (productId) => {
+        const item = cart.value.find((item) => item.product.productId === productId);
+        console.log(`Quantité déjà dans le panier pour le produit ID ${productId}:`, item ? item.quantity : 0);
+        return item ? item.quantity : 0;
+    };
 
+    const totalPrice = computed(() => {
+        const total = cart.value.reduce((total, item) => total + item.product.productPrice * item.quantity, 0);
+        console.log("Prix total du panier :", total);
+        return total;
+    });
 
-
-
-    // Prix total
-    const totalPrice = computed(() =>
-        cart.value.reduce((total, item) => total + item.product.productPrice * item.quantity, 0)
-    );
-
-    return { cart, addToCart, removeFromCart, totalPrice };
+    return { cart, addToCart, removeFromCart, totalPrice, applyQuantityChosenToStock };
 });

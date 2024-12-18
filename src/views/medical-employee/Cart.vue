@@ -85,17 +85,18 @@
     <!-- Boutons d'action -->
     <div class="flex justify-end mt-6">
       <button
-          @click="finalizeOrder"
-          class="bg-blue-600 hover:bg-blue-700 mr-6 text-white px-6 py-3 rounded-md shadow-lg"
-      >
-        Finalisez votre commande
-      </button>
-      <button
           @click="backToCarouselProduct"
-          class="bg-red-400 hover:bg-red-700 text-white px-6 py-3 rounded-md shadow-lg"
+          class="bg-orange-500 hover:bg-orange-300 mr-6 text-white px-6 py-3 rounded-md shadow-lg"
       >
         Retour Page Produits
       </button>
+      <button
+          @click="finalizeOrder"
+          class="bg-blue-500 hover:bg-blue-300 text-white px-6 py-3 rounded-md shadow-lg"
+      >
+        Finalisez votre commande
+      </button>
+
     </div>
   </div>
 </template>
@@ -171,13 +172,14 @@ const finalizeOrder = async () => {
     })),
   };
 
-  console.log("Payload envoyé :", payload); // Vérifie ici !
   try {
+    console.log("Payload envoyé :", payload); // Vérifie ici !
+
     const response = await createOrder(payload);
     const orderId = response.data.orderId;
     await router.push({
       path: "/medical-employee/order-validation",
-      query: { orderId },
+      params: { orderId },
     });
   } catch (error) {
     console.error("Erreur lors de la finalisation de la commande :", error);

@@ -20,36 +20,46 @@
         <h1 class="text-2xl font-bold text-gray-800">{{ product.productName }}</h1>
         <p class="text-gray-500 text-sm">{{ product.productDescription }}</p>
         <p class="text-green-500 font-semibold">Prix unitaire : {{ product.productPrice }}€</p>
-        <p class="text-gray-700 text-sm font-medium">Stock disponible : {{ productStock }}</p>
+        <span
+            v-if="productStock === 0"
+            class="inline-block bg-red-600 text-white px-3 py-1 text-xs font-semibold rounded-full"
+        >
+                      Rupture de stocks
+                    </span>
+        <p v-else class="text-gray-700 text-sm font-medium">Stock disponible : {{ productStock }}</p>
       </div>
 
       <!-- Gestion Quantité -->
       <div class="flex items-center space-x-4">
+        <!-- Bouton de diminution -->
         <button
             class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center shadow"
             @click="decreaseQuantity"
-            :disabled="quantity <= 1"
+            :disabled="quantity <= 0"
         >
           <span class="text-gray-700 font-bold">-</span>
         </button>
 
+        <!-- Input de quantité -->
         <input
             type="number"
             v-model.number="quantity"
             @input="onQuantityInput"
             class="w-16 text-center border rounded-md shadow"
-            min="1"
-            :max="productStock"
+            min="0"
+            :max="initialProductStock"
         />
 
+        <!-- Bouton d'augmentation -->
         <button
             class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center shadow"
             @click="increaseQuantity"
-            :disabled="quantity >= productStock"
+            :disabled="quantity >= initialProductStock"
         >
           <span class="text-gray-700 font-bold">+</span>
         </button>
       </div>
+
 
       <!-- Prix Total -->
       <p class="text-lg font-semibold text-blue-600">
@@ -59,16 +69,16 @@
       <!-- Boutons Action -->
       <div class="flex space-x-4 w-full">
         <button
-            class="flex-1 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium rounded-full shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-300"
-            @click="addToCart"
-        >
-          Ajouter à la commande
-        </button>
-        <button
             class="flex-1 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white font-medium rounded-full shadow-md hover:from-red-600 hover:to-red-800 transition-all duration-300"
             @click="redirectToPreviousPage"
         >
           Retour
+        </button>
+        <button
+            class="flex-1 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium rounded-full shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-300"
+            @click="addToCart"
+        >
+          Ajouter à la commande
         </button>
       </div>
     </div>
@@ -83,11 +93,11 @@
 
 
 <script setup>
-import {ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
 import {getProductByIdRequest} from "@/services/products/productService.js";
-import { useCartStore } from "@/store/cartStore.js";
+import {useCartStore} from "@/store/cartStore.js";
 import {storeToRefs} from "pinia";
 
 
@@ -100,26 +110,39 @@ const product = ref(null);
 const loading = ref(true);
 const quantity = ref(1); // Quantité par défaut
 const productStock = ref(0); // Stock dynamique
+const initialProductStock = ref(0)
 const totalPrice = ref(0); // Prix total calculé
+const cartStore = useCartStore();
+const {cart} = storeToRefs(cartStore);
+
 
 const fetchProductDetails = async () => {
   try {
+    console.log("Récupération des détails pour le produit ID :", productId);
     const response = await getProductByIdRequest(productId);
     if (response && response.data) {
       product.value = {
         productId: response.data.productId,
-        productImage: response.data.productImage || "https://via.placeholder.com/150/cccccc/ffffff?text=No+Image",
+        productImage: response.data.productImage || "https://via.placeholder.com/150",
         productName: response.data.productName,
         productDescription: response.data.productDescription,
         productPrice: response.data.productPrice,
         productStock: response.data.productStock,
       };
-      productStock.value = response.data.productStock;
+
+      // Stock initial depuis l'API
+      initialProductStock.value = response.data.productStock;
+
+      // Prendre en compte la quantité déjà ajoutée au panier
+      const quantityInCart = cartStore.applyQuantityChosenToStock(productId);
+      console.log("Quantité déjà dans le panier :", quantityInCart);
+
+      productStock.value = Math.max(initialProductStock.value - quantityInCart, 0);
+      quantity.value = 0; // Réinitialiser la quantité sélectionnée
       updateTotalPrice();
     }
   } catch (error) {
     console.error("Erreur lors de la récupération du produit :", error.message);
-    product.value = null;
   } finally {
     loading.value = false;
   }
@@ -129,40 +152,65 @@ const updateTotalPrice = () => {
   totalPrice.value = quantity.value * product.value.productPrice;
 };
 
+// Mettre à jour dynamiquement le stock affiché
+const updateDynamicStock = () => {
+  const quantityInCart = cartStore.applyQuantityChosenToStock(productId);
+  productStock.value = Math.max(initialProductStock.value - (quantity.value + quantityInCart), 0);
+};
+
+// Fonction pour augmenter la quantité
 const increaseQuantity = () => {
-  if (quantity.value < productStock.value) {
+  const quantityInCart = cartStore.applyQuantityChosenToStock(productId);
+  if (quantity.value + 1 + quantityInCart <= initialProductStock.value) {
     quantity.value++;
-    productStock.value--;
+    updateDynamicStock();
     updateTotalPrice();
+  } else {
+    alert("Vous ne pouvez pas dépasser le stock disponible.");
   }
 };
 
+// Fonction pour diminuer la quantité
 const decreaseQuantity = () => {
-  if (quantity.value > 1) {
+  if (quantity.value > 0) {
     quantity.value--;
-    productStock.value++;
+    updateDynamicStock();
     updateTotalPrice();
   }
 };
 
-const onQuantityInput = () => {
-  if (quantity.value < 1) {
-    quantity.value = 1;
-  } else if (quantity.value > productStock.value) {
-    quantity.value = productStock.value;
+// Validation pour l'input
+const onQuantityInput = (event) => {
+  const regex = /^[0-9]*$/; // Accepte uniquement les chiffres
+  let value = event.target.value.replace(/\D/g, ""); // Supprime les caractères non numériques
+  value = parseInt(value || "0", 10);
+
+  const quantityInCart = cartStore.applyQuantityChosenToStock(productId);
+  if (value + quantityInCart <= initialProductStock.value) {
+    quantity.value = value;
+  } else {
+    alert(`Vous ne pouvez pas dépasser le stock disponible.`);
+    quantity.value = initialProductStock.value - quantityInCart;
   }
+
+  updateDynamicStock();
   updateTotalPrice();
 };
 
-const cartStore = useCartStore();
-const { cart } = storeToRefs(cartStore);
-
-
 const addToCart = () => {
-  cartStore.addToCart(product.value, quantity.value);
-  alert(`${quantity.value} x ${product.value.productName} ajouté(s) à la commande !`);
-  router.push("/medical-employee/cart");
+  const totalQuantityInCart = cartStore.applyQuantityChosenToStock(product.value.productId);
+  const newQuantity = totalQuantityInCart + quantity.value;
+
+
+  if (newQuantity <= initialProductStock.value && newQuantity >0) {
+    cartStore.addToCart(product.value, quantity.value);
+    alert(`${quantity.value} x ${product.value.productName} ajouté(s) à la commande !`);
+    router.push("/medical-employee/cart");
+  } else {
+    alert(`La quantité totale ne peut pas dépasser le stock disponible de ${initialProductStock.value}. Et doit être supérieur à 0 !`);
+  }
 };
+
 
 const redirectToPreviousPage = () => {
   router.go(-1)

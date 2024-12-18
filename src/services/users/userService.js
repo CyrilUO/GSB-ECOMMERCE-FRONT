@@ -70,7 +70,7 @@ export const getCurrentUserRequest = async () => {
     console.log("🔹 [getCurrentUserRequest] Appel API lancé pour récupérer l'utilisateur connecté.");
     try {
         const response = await authApi.get("/users/storedId");
-        console.log("✅ [getCurrentUserRequest] Réponse API :", response.data);
+        console.log("✅ [getCurrentUserRequest] Réponse API pour l'utilisateur :", response.data);
         return response;
     } catch (error) {
         console.error("❌ [getCurrentUserRequest] Erreur API :", error.response ? error.response.data : error.message);

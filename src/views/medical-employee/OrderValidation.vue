@@ -29,9 +29,9 @@
         </thead>
         <tbody>
         <tr v-for="(product, index) in products" :key="index" class="border-b border-gray-200">
-          <td class="p-2 text-sm text-gray-700">{{ product.product_name }}</td>
+          <td class="p-2 text-sm text-gray-700">{{ product.productName }}</td>
           <td class="text-center p-2 text-sm text-gray-700">{{ product.quantity }}</td>
-          <td class="text-right p-2 text-sm text-gray-700">{{ product.product_price }} €</td>
+          <td class="text-right p-2 text-sm text-gray-700">{{ product.productPrice }} €</td>
         </tr>
         </tbody>
       </table>
@@ -118,8 +118,8 @@ onMounted(async () => {
 
     products.value = orderData.items;
     orderTotalPrice.value = orderData.orderTotalPrice;
-    orderStatus.value = orderData.status;
-    orderCreatedAt.value = orderData.createdAt;
+    orderStatus.value = orderData.orders;
+    orderCreatedAt.value = orderData.orderCreatedAt;
     deliveryAddress.value = orderData.deliveryAddressId || deliveryAddress.value;
     userName.value = orderData.userName || userName.value;
   } catch (error) {

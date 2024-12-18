@@ -6,23 +6,6 @@ const BACK_REQUEST_BASE_URL = "http://localhost:8080/api"; // Point d'entrée de
 const CONTENT_TYPE = "application/json";
 
 
-// Récupère le token, check s'il existe, si oui (verifier par la présence de authToken) est renvoyé. Sinon
-const fetchToken = async () => {
-    const existingToken = localStorage.getItem("authToken");
-    if (existingToken) return existingToken; /* pas specialement besoind 'accolades*/
-
-    try {
-        const response = await axios.get(API_TOKEN_URL);
-        const token = response.data.token;
-        localStorage.setItem("authToken", token);
-        console.log("Payload JWT :", token);
-
-        return token;
-    } catch (err) {
-        console.error("Erreur lors de la récupération du token :", err.message);
-        return null;
-    }
-};
 
 // Instance Axios avec intercepteur
 export const authApi = axios.create({
@@ -40,12 +23,27 @@ authApi.interceptors.request.use(async (config) => {
     return config;
 });
 
+// Récupère le token, check s'il existe, si oui (verifier par la présence de authToken) est renvoyé. Sinon
+const fetchToken = async () => {
+    const existingToken = localStorage.getItem("authToken");
 
+    if (existingToken) {
+        return existingToken;
+    } /* pas specialement besoind 'accolades*/
 
-// export const isAuthenticated = () => {
-//
-//     return localStorage.getItem('authToken') !== null;
-// }
+    try {
+        const response = await axios.get(API_TOKEN_URL);
+        const token = response.data.token;
+        localStorage.setItem("authToken", token);
+        console.log("Payload JWT :", token);
+
+        return token;
+    } catch (err) {
+        console.error("Erreur lors de la récupération du token :", err.message)
+        return null;
+    }
+};
+
 
 
 export const parseJwt = (token) => {
