@@ -5,7 +5,7 @@
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl font-bold">Conditions Générales d'Utilisation</h2>
         <img
-            src="@/assets/images/logo_gsb.png"
+            src="../../assets/images/common/logo_gsb.png"
             class="mx-auto mt-6 mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
         />
         <p class="text-sm mt-2">Dernière mise à jour : Novembre 2024</p>

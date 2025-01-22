@@ -39,5 +39,10 @@ export const useCartStore = defineStore("cart", () => {
         return total;
     });
 
-    return { cart, addToCart, removeFromCart, totalPrice, applyQuantityChosenToStock };
+    const clearCartStore = () => {
+        cart.value = [];
+        console.log("Vidage du panier")
+    }
+
+    return { cart, addToCart, removeFromCart, totalPrice, applyQuantityChosenToStock, clearCartStore };
 });

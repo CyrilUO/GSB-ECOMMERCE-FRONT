@@ -4,7 +4,7 @@
     <div class="flex-grow flex items-center justify-center">
       <div class="flex-col justify-center py-12 bg-amber-50 rounded-xl shadow-lg border_custo px-container-responsive">
         <img
-            src="@/assets/images/logo_gsb.png"
+            src="../assets/images/common/logo_gsb.png"
             class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
         />
 
@@ -196,7 +196,10 @@ const validateForm = async () => {
 
       localStorage.setItem("authToken", token);
 
-      const userRole = parseJwt(token)?.userRole;
+      const tokenDecoded = parseJwt(token);
+      console.log("Token décodé :", tokenDecoded);
+
+      const userRole = tokenDecoded?.roleName;
       console.log("Rôle utilisateur :", userRole);
 
       if (userRole) {

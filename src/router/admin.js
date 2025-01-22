@@ -4,6 +4,7 @@ import dashboardManageUsers from "@/views/admin/dashboardManageUsers.vue";
 import dashboardAddUsers from "@/views/admin/dashboardAddUsers.vue";
 import dashboardManageProducts from "@/views/admin/dashboardManageProducts.vue";
 import dashboardAddProduct from "@/views/admin/dashboardAddProduct.vue";
+import dashboardUpdateUser from "@/views/admin/dashboardUpdateUser.vue";
 export const adminRoutes = [
     {
         path: '/admin',
@@ -40,6 +41,11 @@ export const adminRoutes = [
                 component: dashboardAddProduct,
                 meta: { authRequired: true, requestedRole: "admin" },
             },
+            {
+                path: 'update-users/:userId',
+                component: dashboardUpdateUser,
+                meta: { authRequired: true, requestedRole: "admin" }
+            }
         ],
     },
 ];

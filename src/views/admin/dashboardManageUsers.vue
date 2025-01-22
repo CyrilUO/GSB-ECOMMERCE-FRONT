@@ -18,7 +18,6 @@
             <th class="py-3 px-5 text-left border-white border-2">Nom</th>
             <th class="py-3 px-5 text-left border-white border-2">Prénom</th>
             <th class="py-3 px-5 text-left border-white border-2">Email</th>
-            <th class="py-3 px-5 text-left border-white border-2">Mot de passe</th>
             <th class="py-3 px-5 text-left border-white border-2">Rôle</th>
             <th class="py-3 px-5 text-left border-white border-2">Créé le</th>
             <th class="py-3 px-5 text-left border-white border-2">Modifié le</th>
@@ -34,63 +33,34 @@
             <td class="py-3 px-5 text-gray-700">
               {{ user.userId }}
             </td>
+
             <td class="py-3 px-5">
-              <template v-if="user.isGettingModified">
-                <input v-model="user.userSurname" class="bg-amber-300 w-full p-2 border rounded"/>
-              </template>
-              <template v-else>
                 {{ user.userSurname }}
-              </template>
             </td>
             <td class="py-3 px-5">
-              <template v-if="user.isGettingModified">
-                <input v-model="user.userName" class="bg-amber-300 w-full p-2 border rounded"/>
-              </template>
-              <template v-else>
                 {{ user.userName }}
-              </template>
             </td>
 
             <td class="py-3 px-5">
-              <template v-if="user.isGettingModified">
-                <input v-model="user.userEmail" class="bg-amber-300 w-full p-2 border rounded"/>
-              </template>
-              <template v-else>
                 {{ user.userEmail }}
-              </template>
             </td>
 
             <td class="py-3 px-5">
-              <template v-if="user.isGettingModified">
-                <input v-model="user.userPassword" class="bg-amber-300 w-full p-2 border rounded"/>
-              </template>
-              <template v-else>
-                {{ user.userPassword }}
-              </template>
+                {{ user.role.roleName }}
             </td>
 
             <td class="py-3 px-5">
-              <template v-if="user.isGettingModified">
-                <input v-model="user.userRole" class="bg-amber-300 w-full p-2 border rounded"/>
-              </template>
-              <template v-else>
-                {{ user.userRole }}
-              </template>
+              {{ formatDate(user.userDateCreation) }}
             </td>
 
             <td class="py-3 px-5">
-              {{ user.userDateCreation }}
-            </td>
-
-            <td class="py-3 px-5">
-              {{ user.userModifiedAt }}
+              {{ formatDate(user.userModifiedAt) }}
             </td>
 
 
             <td class="py-3 px-5 text-center flex justify-center items-center gap-4">
               <button
-                  v-if="!user.isGettingModified"
-                  @click="modifyUserStatus(user)"
+                  @click="goToUpdateUser(user)"
                   class="text-blue-600 hover:scale-110 transition-transform"
               >
                 <svg
@@ -114,17 +84,7 @@
                 </svg>
               </button>
 
-
               <button
-                  v-if="user.isGettingModified"
-                  @click="updateAndSaveUser(user)"
-                  class="text-green-600 hover:scale-110 transition-transform inline-flex items-center justify-center p-0 m-0 leading-none align-middle"
-              >
-                <CheckCircleIcon class="w-6 h-6"/>
-              </button>
-
-              <button
-                  v-if="!user.isGettingModified"
                   @click="deleteUser(user.userId)"
                   class="text-red-600 hover:scale-110 transition-transform"
               >
@@ -163,65 +123,30 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {CheckCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import {useRouter} from "vue-router";
 
-import {getUsersRequest, updateUserRequest , deleteUserRequest} from "@/services/users/userService.js";
+import {getAllUsersRequest, deleteUserRequest} from "@/services/users/userService.js";
+
+import {format} from "date-fns/format";
+import { fr } from "date-fns/locale"
 
 const users = ref([])
 const messageStatus = ref('');
-
-
-
-const modifyUserStatus = (user) => {
-  user.isGettingModified = true;
-};
-
 const route = useRouter()
 
-
+/** Fonction pour récupérer l'ensemble des données de la table users à afficher
+ * @returns {Promise<void>}
+ */
 const getUsersData = async () => {
 
   try {
-    const response = await getUsersRequest()
+    const response = await getAllUsersRequest()
     users.value = response.data
   } catch (error) {
     console.error("Erreur lors de la récuperation des donnees :", error)
   }
 
 }
-
-const updateAndSaveUser = async (user) => {
-  try {
-    const updatedUser = {
-      userId: user.userId,
-      userSurname: user.userSurname,
-      userName: user.userName,
-      userEmail: user.userEmail,
-      userPassword: user.userPassword,
-      userRole: user.userRole,
-      userModifiedAt: new Date().toISOString(), // Ajouter la date actuelle de modification
-    };
-
-    const response = await updateUserRequest(user.userId, updatedUser);
-
-    if (response.status === 200) {
-      messageStatus.value = `L'utilisateur dont l'ID est ${user.userId} a été mis à jour avec succès.`;
-      user.isGettingModified = false;
-
-      setTimeout(() => {
-        messageStatus.value = "";
-      }, 5000);
-
-      await getUsersData(); // Rafraîchir la liste des utilisateurs
-    } else {
-      messageStatus.value = `Erreur : Impossible de mettre à jour l'utilisateur ${user.userId}.`;
-    }
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour :", error);
-    messageStatus.value = "Une erreur s'est produite lors de la mise à jour.";
-  }
-};
 
 const deleteUser = async (id) => {
   if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
@@ -240,11 +165,22 @@ const deleteUser = async (id) => {
   }
 };
 
-
+const formatDate = (isoDate) => {
+  if (!isoDate) return "Date inconnue";
+  const formattedDate = new Date(isoDate)
+  return format(formattedDate, "dd/MM/yyyy à HH:mm", {locale : fr})
+}
 
 const goToAddUsers = async () => {
   await route.push("/admin/add-users");
 };
+
+const goToUpdateUser = async (user) => {
+  console.log(`Navigating to: /admin/update-users/${user.userId}`);
+  await route.push(`/admin/update-users/${user.userId}`);
+};
+
+
 
 
 onMounted(() => {

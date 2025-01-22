@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-800">
     <img
-        src="@/assets/images/logo_gsb.png"
+        src="../assets/images/common/logo_gsb.png"
         class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
     />
     <div class="bg-white shadow-md rounded-lg p-6 text-center w-80">

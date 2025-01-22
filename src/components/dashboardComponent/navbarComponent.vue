@@ -3,7 +3,7 @@
   <nav class="bg-blue-900 text-white py-4">
     <div class="container mx-auto flex justify-between items-center">
       <div class="flex items-center">
-        <img src="../../assets/images/logo_gsb.png" alt="logo" class="h-10 mr-4">
+        <img src="../../assets/images/common/logo_gsb.png" alt="logo" class="h-10 mr-4">
       </div>
       <div class="flex space-x-4">
         <h2 v-if="role === 'Admin'" class="font-extrabold hover:underline">Dashboard Administrateur</h2>

@@ -3,7 +3,7 @@
     <div class="mx-auto flex justify-around  items-center px-4 phone:justify-between tablet:justify-between">
       <!-- Logo -->
       <div class="flex items-center">
-        <img src="@/assets/images/logo_gsb.png" alt="logo" class="h-10 mr-2" />
+        <img src="../../assets/images/common/logo_gsb.png" alt="logo" class="h-10 mr-2" />
       </div>
 
       <!-- Menu Burger (Mobile uniquement) -->
@@ -57,9 +57,9 @@
 
         <div>
         <router-link
-            to="/medical-employee/order-validation"
+            to="/medical-employee/order-list"
             class="hover:text-gray-300 transition-all duration-300 text-base"
-        >📋 Résumé Commandes</router-link
+        >📋 Mes Commandes</router-link
         >
         </div>
 
@@ -99,7 +99,7 @@
         >
 
         <router-link
-            to="/medical-employee/order-validation"
+            to="/medical-employee/order-list"
             class="hover:text-gray-300 hover:opacity-90 transition-all duration-300"
             @click="toggleMenu"
         >📋 Résumé Commandes</router-link

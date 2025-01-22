@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-800">
     <img
-        src="@/assets/images/logo_gsb.png"
+        src="../assets/images/common/logo_gsb.png"
         class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
     />
     <div class="bg-white shadow-md rounded-lg p-6 text-center w-80">
@@ -20,8 +20,39 @@
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 
+import {useCartStore} from "@/store/cartStore.js";
+import {useUserStore} from "@/store/userStore.js";
+
+const userStore = useUserStore();
+
+const cartStore = useCartStore();
+
 const router = useRouter();
-const countdown = ref(2);
+const countdown = ref(5);
+
+
+const logout = async () => {
+  try {
+    console.log("userStore avant déconnexion :", userStore);
+
+    if (userStore.roleName === "medical-employee") {
+      cartStore.clearCartStore();
+      console.log("Panier vidé pour medical-employee");
+    } else {
+      console.log("Rôle non medical-employee, panier non vidé.");
+    }
+
+    userStore.clearCurrentUser();
+    userStore.clearSessionData();
+
+    await router.push('/login');
+  } catch (error) {
+    console.error("Une erreur est survenue lors de la déconnexion :", error);
+  }
+};
+
+
+
 
 const startCountdown = () => {
   const interval = setInterval(() => {
@@ -34,24 +65,19 @@ const startCountdown = () => {
   }, 1000);
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await userStore.fetchCurrentUser(); // Assurez-vous que les données utilisateur sont chargées
   startCountdown();
+  console.log("Valeurs actuelles dans userStore :", {
+    userId: userStore.userId,
+    roleName: userStore.roleName,
+  });
+
 });
 
-const clearSessionData = () => {
-  localStorage.clear()
-};
 
-const logout = () => {
 
-  try {
-    clearSessionData();
-    router.push("/login")
-  } catch (error) {
-    console.error("Une erreur est survenue : ", error)
-  }
 
-}
 </script>
 
 <style scoped>

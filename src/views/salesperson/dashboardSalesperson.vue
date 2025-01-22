@@ -5,7 +5,7 @@
       <div class="container mx-auto flex justify-between items-center">
         <!-- Logo -->
         <div class="flex items-center">
-          <img src="../../assets/images/logo_gsb.png" alt="logo" class="h-10 mr-4" />
+          <img src="../../assets/images/common/logo_gsb.png" alt="logo" class="h-10 mr-4" />
         </div>
 
         <!-- Titre visible uniquement sur des écrans md et plus larges -->
@@ -14,12 +14,6 @@
         </h2>
 
         <!-- Déconnexion visible uniquement sur des écrans md et plus larges -->
-        <a
-            href="/logout"
-            class="hidden md:flex items-center text-white hover:text-blue-400"
-        >
-          Déconnexion
-        </a>
 
         <!-- Bouton burger visible uniquement sur des écrans en dessous de md -->
         <button
@@ -76,6 +70,12 @@
           >
             <span>Suivi commandes</span>
           </router-link>
+          <a
+              href="/logout"
+              class="hidden md:flex items-center text-white hover:text-blue-400"
+          >
+            Déconnexion
+          </a>
         </nav>
       </aside>
 

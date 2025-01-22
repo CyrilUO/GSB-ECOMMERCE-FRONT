@@ -57,6 +57,8 @@
                     type="number"
                     v-model="product.productPrice"
                     class="w-full p-2 border rounded"
+                    min="0"
+
                 />
               </template>
               <template v-else>
@@ -69,6 +71,7 @@
                     type="number"
                     v-model="product.productStock"
                     class="w-full p-2 border rounded"
+                    min="0"
                 />
               </template>
               <template v-else>
@@ -181,6 +184,7 @@ const getProductData = async () => {
 
 
 const saveAndUpdateProduct = async (product) => {
+  //Je stock dans des variables les nouvelles valeur de mes clefs basées sur la définition de ma classe product
   try {
     const updatedValues = {
       productId: product.productId,
@@ -189,38 +193,26 @@ const saveAndUpdateProduct = async (product) => {
       productPrice: product.productPrice,
       productStock: product.productStock,
     };
+    // je créé une variable qui me retourne une promesse qui prend comme paramètre les deux arguments nécessaire à l'envoie de ma requête
+    const update = await updateProductRequest(product.productId, updatedValues);
 
-    const token = localStorage.getItem('authToken'); // Exemple avec localStorage
-
-    const update = await axios.put(
-        `http://localhost:8080/api/products/${product.productId}`,
-        updatedValues,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Ajouter le token ici
-            Accept: "application/json"
-          },
-        }
-    );
-
+    // Après que le serveur ait updaté mon produit je reçois un code 200
     if (update.status === 200) {
       messageStatus.value = `Le produit dont l'id est ${product.productId} a été correctement mis à jour.`;
       product.isGettingModified = false;
-      setTimeout(() => {
-        messageStatus.value = "";
-      }, 5000);
+      await refreshMessage();
       await getProductData();
     } else {
+      //Dans le cas contraire erreur, soit un problème front, soit un probleme dans mon back
       messageStatus.value = `Erreur lors de la modification du produit.`;
-      setTimeout(() => {
-        messageStatus.value = "";
-      }, 5000);
+      await refreshMessage();
     }
   } catch (error) {
     console.error(error);
   }
 };
 
+/* TODO AJOUT DUNE POP UP*/
 const deleteProduct = async (id) => {
   if (confirm("Voulez-vous vraiment supprimer ce produit")) {
     try {
@@ -231,9 +223,7 @@ const deleteProduct = async (id) => {
       } else {
         messageStatus.value = "La suppression a échoué.";
       }
-      setTimeout(() => {
-        messageStatus.value = "";
-      }, 5000);
+      await refreshMessage();
       await getProductData();
     } catch (error) {
       console.error("Erreur lors de la suppression :", error);
@@ -248,6 +238,14 @@ const route = useRouter();
 const goToAddProduct = async () => {
   await route.push("/admin/add-products");
 };
+
+
+const refreshMessage = async => {
+  setTimeout(() => {
+    messageStatus.value = "";
+  }, 5000);
+}
+
 
 onMounted(() => {
   getProductData();

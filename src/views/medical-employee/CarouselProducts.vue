@@ -1,153 +1,137 @@
 <template>
-  <NavBar/>
-  <!-- Ajout de flex pour le centrage -->
-  <div class="min-h-screen bg-gradient-to-r from-blue-100 to-blue-300 flex items-center justify-center">
-    <div class="w-full max-w-5xl">
-      <!-- Titre en haut du carousel -->
+  <NavBar />
+  <div class="py-10 flex items-center justify-center">
+    <div class="w-full max-w-7xl pb-10">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-6">
         Liste des produits disponibles
       </h1>
-
-      <!-- Carousel -->
-      <div class="relative overflow-hidden rounded-3xl shadow-lg bg-white/30 backdrop-blur-md pb-4">
-        <!-- Carousel Content -->
-        <div v-if="products.length > 0" class="relative">
-          <div
-              class="flex transition-transform duration-700 ease-in-out"
-              :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
-          >
-            <div
-                v-for="(product, index) in products"
-                :key="index"
-                class="flex-shrink-0 w-full flex justify-center items-center p-8"
+      <!-- Grille des produits -->
+      <div
+          class="grid grid-cols-1 phone:grid-cols-2 tablet:grid-cols-3 laptop:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8 p-4 bg-white/30 backdrop-blur-md rounded-3xl shadow-lg"
+      >
+        <div
+            v-for="(product, index) in paginatedProducts"
+            :key="product.productId"
+            class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105"
+        >
+          <img
+              :src="product.productImage"
+              :alt="product.productName"
+              class="w-full h-40 object-cover rounded-md mb-4"
+          />
+          <h2 class="text-lg font-semibold text-gray-700">
+            {{ (currentPage - 1) * itemsPerPage + index + 1 }}. {{ product.productName }}
+          </h2>
+          <p class="text-sm text-gray-500 mb-4">{{ product.productDescription }}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-blue-500 font-bold">{{ product.productPrice }}€</span>
+            <button
+                @click="goToDetails(product)"
+                class="text-white bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             >
-              <div
-                  class="flex items-center space-x-6 p-6 bg-white/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-2xl transform hover:scale-105 transition duration-300"
-              >
-                <img
-                    :src="product.productImage"
-                    :alt="product.productName"
-                    class="w-32 h-32 object-cover rounded-full shadow-lg"
-                />
-                <div class="space-y-2">
-                  <h2 class="text-2xl font-bold text-gray-700">{{ product.productName }}</h2>
-                  <p class="text-sm text-gray-500">{{ product.productDescription }}</p>
-                  <div class="flex items-center space-x-2">
-                    <span
-                        class="inline-block bg-blue-500 text-white px-3 py-1 text-sm font-semibold rounded-full shadow"
-                    >
-                      {{ product.productPrice }}€
-                    </span>
-                    <span
-                        v-if="product.isNew"
-                        class="inline-block bg-green-500 text-white px-3 py-1 text-xs font-semibold rounded-full"
-                    >
-                      Nouveau
-                    </span>
-                  </div>
-                  <button
-                      @click="goToDetails(product)"
-                      class="mt-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200"
-                  >
-                    Détails du produit
-                  </button>
-
-                </div>
-              </div>
-            </div>
+              Détails
+            </button>
           </div>
         </div>
+      </div>
 
-        <!-- Empty State -->
-        <div v-else class="text-center py-10">
-          <p class="text-gray-600 text-lg">Aucun produit disponible pour le moment.</p>
-        </div>
-
-        <!-- Navigation Buttons -->
+      <!-- Pagination -->
+      <div class="flex justify-center mt-6 space-x-4">
         <button
-            class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/50 backdrop-blur-md text-gray-700 hover:bg-white text-2xl p-2 rounded-full shadow transition duration-300"
-            @click="prevSlide" aria-label="Précédent"
+            v-for="page in totalPages"
+            :key="page"
+            @click="changePage(page)"
+            :class="[ 'px-4 py-2 rounded-lg', currentPage === page ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300']"
         >
-          &larr;
+          {{ page }}
         </button>
-        <button
-            class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/50 backdrop-blur-md text-gray-700 hover:bg-white text-2xl p-2 rounded-full shadow transition duration-300"
-            @click="nextSlide" aria-label="Suivant"
-        >
-          &rarr;
-        </button>
-
-        <!-- Indicators -->
-        <div class="flex justify-center mt-4 space-x-2">
-          <button
-              v-for="(product, index) in products"
-              :key="index"
-              :class="{
-                'bg-blue-600': currentIndex === index,
-                'bg-gray-400': currentIndex !== index,
-              }"
-              class="w-4 h-4 rounded-full transition-all duration-300"
-              @click="goToSlide(index)"
-          ></button>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
-
-
 <script setup>
-import {ref, onMounted} from "vue";
-import {useRouter} from "vue-router";
+import {ref, onMounted, onBeforeUnmount} from "vue";
+import { useRouter } from "vue-router";
 import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
-import {getProductsRequest} from "@/services/products/productService.js";
+import { getProductsRequest } from "@/services/products/productService.js";
+import Mediazol from "@/assets/images/medecine/mediazol.png";
 
 const router = useRouter();
 
-const products = ref([]);
-const currentIndex = ref(0);
+const products = ref([]); // Tous les produits récupérés
+const paginatedProducts = ref([]); // Produits affichés pour la page actuelle
+const currentPage = ref(1); // Page courante
+const itemsPerPage = 4; // Nombre de produits par page
+const totalPages = ref(1); // Nombre total de pages
 
+// Récupération des produits
 const fetchProducts = async () => {
   try {
-    const response = await getProductsRequest();
-    products.value = response.data.map(product => ({
+    const response = await getProductsRequest({
+      offset: (currentPage.value - 1) * itemsPerPage,
+      limit: itemsPerPage,
+    });
+
+    const newProducts = response.data.map(product => ({
       productId: product.productId || 0,
-      productImage: product.productImage || "https://via.placeholder.com/150/cccccc/ffffff?text=No+Image",
+      productImage: Mediazol,
       productName: product.productName || "Produit inconnu",
       productDescription: product.productDescription || "Aucune description disponible.",
       productPrice: product.productPrice || 0,
-      isNew: Math.random() > 0.7, // Simule des produits "nouveaux"
     }));
+
+    products.value = [...products.value, ...newProducts];
+
+    // Mise à jour de la pagination
+    totalPages.value = Math.ceil(products.value.length / itemsPerPage);
+    updatePaginatedProducts();
   } catch (error) {
     console.error("Erreur lors de la récupération des produits :", error);
   }
 };
 
+// Mise à jour des produits affichés sur la page actuelle
+const updatePaginatedProducts = () => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  // Extraire uniquement les produits pour la page actuelle
+  paginatedProducts.value = products.value.slice(startIndex, endIndex);
+};
+
+// Changer de page
+const changePage = (page) => {
+  currentPage.value = page;
+  updatePaginatedProducts();
+};
+
+// Détails du produit
 const goToDetails = (product) => {
   router.push({
-    name: "PDP", // Assure-toi que le nom de ta route est correcte
-    params: { id: product.productId }, // Passe l'ID en paramètre
+    name: "PDP",
+    params: { id: product.productId },
   });
 };
 
+onMounted(() => {
+  fetchProducts(); // Appel de la fonction fetchProducts
+  document.body.classList.add("page-produits-body"); // Ajout de la classe au body
+});
 
-const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % products.value.length;
-};
+onBeforeUnmount(() => {
+  document.body.classList.remove("page-produits-body"); // Retrait de la classe au body
+});
 
-const prevSlide = () => {
-  currentIndex.value = (currentIndex.value - 1 + products.value.length) % products.value.length;
-};
 
-const goToSlide = (index) => {
-  currentIndex.value = index;
-};
-
-onMounted(fetchProducts);
 </script>
 
-<style scoped>
-/* Pour des transitions fluides sur les boutons */
 
+
+<style>
+
+
+.page-produits-body {
+  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+}
 </style>

@@ -47,6 +47,8 @@
 import {ref} from 'vue';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
+import {addUserRequest} from "@/services/users/userService.js";
+import {addProductRequest} from "@/services/products/productService.js";
 
 const productName = ref('');
 const productDescription = ref('');
@@ -61,7 +63,6 @@ const sanitizeStringInput = (string) => {
 }
 
 const registerNewProduct = async () => {
-  const token = localStorage.getItem("authToken")
 
   try {
     const newProduct = {
@@ -72,12 +73,7 @@ const registerNewProduct = async () => {
     };
 
     if (newProduct.productName && newProduct.productDescription) {
-      await axios.post('http://localhost:8080/api/products', newProduct, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json"// Ajouter le token ici
-        },
-      });
+      const response = await addProductRequest(newProduct);
 
       productName.value = '';
       productDescription.value = '';

@@ -1,6 +1,6 @@
 <template>
   <NavBar/>
-  <div class=" mx-auto p-6 flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 to-blue-300">
+  <div class=" mx-auto p-6 flex justify-center items-center h-screen bg-gradient-to-r from-blue-100 to-blue-300">
     <!-- Card Produit -->
     <div
         v-if="product"
@@ -99,6 +99,7 @@ import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
 import {getProductByIdRequest} from "@/services/products/productService.js";
 import {useCartStore} from "@/store/cartStore.js";
 import {storeToRefs} from "pinia";
+import Mediazol  from "@/assets/images/medecine/mediazol.png"
 
 
 const route = useRoute();
@@ -116,6 +117,7 @@ const cartStore = useCartStore();
 const {cart} = storeToRefs(cartStore);
 
 
+
 const fetchProductDetails = async () => {
   try {
     console.log("Récupération des détails pour le produit ID :", productId);
@@ -123,7 +125,7 @@ const fetchProductDetails = async () => {
     if (response && response.data) {
       product.value = {
         productId: response.data.productId,
-        productImage: response.data.productImage || "https://via.placeholder.com/150",
+        productImage: Mediazol,
         productName: response.data.productName,
         productDescription: response.data.productDescription,
         productPrice: response.data.productPrice,
@@ -217,6 +219,8 @@ const redirectToPreviousPage = () => {
 }
 
 onMounted(fetchProductDetails);
+
+
 </script>
 
 

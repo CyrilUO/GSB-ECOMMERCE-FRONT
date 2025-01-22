@@ -4,6 +4,7 @@ import carouselProducts from "@/views/medical-employee/CarouselProducts.vue";
 import productDetails from "@/views/medical-employee/ProductDetails.vue";
 import cart from "@/views/medical-employee/Cart.vue";
 import orderValidation from "@/views/medical-employee/OrderValidation.vue";
+import orderList from "@/views/medical-employee/OrderList.vue";
 
 export const medicalEmployeeRoutes = [
     {
@@ -53,9 +54,18 @@ export const medicalEmployeeRoutes = [
                 },
             },
             {
-                path: "order-validation",
+                path: "order-validation/:orderId",
                 component: orderValidation,
                 name: "Order Validation",
+                meta: {
+                    authRequired: true,
+                    requestedRole: "medical-employee",
+                },
+            },
+            {
+                path: "order-list",
+                component: orderList,
+                name: "Order List",
                 meta: {
                     authRequired: true,
                     requestedRole: "medical-employee",

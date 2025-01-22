@@ -7,13 +7,14 @@ export default {
   darkMode: false,
   theme: {
     screens: {
-      xsPhone: { max: '399px' },
-      phone: { min: '400px', max: '639px' },
-      tablet: { min: '640px', max: '1023px' },
-      laptop: { min: '1024px', max: '1279px' },
-      desktop: { min: '1280px', max: '1535px' },
-      xlDesktop: { min: '1536px' },
+      xsPhone: '399px',
+      phone: '400px',
+      tablet: '640px',
+      laptop: '1045px',
+      desktop: '1280px',
+      xlDesktop: '1536px',
     },
+
 
     extend: {
       fontFamily: {

@@ -1,4 +1,4 @@
-import { authApi } from "@/services/api.js";
+import {authApi} from "@/services/api.js";
 
 // Créer une commande
 export const createOrder = async (payload) => {
@@ -27,3 +27,12 @@ export const getOrderDetails = async (orderId) => {
         throw error;
     }
 };
+
+export const getUserOrders = async () => {
+    try {
+        return await authApi.get(`/orders/userOrderList`)
+    } catch (err) {
+        throw err
+    }
+}
+
