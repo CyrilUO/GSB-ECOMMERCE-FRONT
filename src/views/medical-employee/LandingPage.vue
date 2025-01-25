@@ -10,7 +10,7 @@
       <!-- Background Image -->
       <div class="absolute inset-0">
         <img
-            src="@/assets/images/medicament-landing-min.jpg"
+            src="@/assets/images/med-bg-min.jpg"
             alt="background-med-images"
             class="w-full h-full object-cover filter brightness-75"
         />

@@ -15,8 +15,8 @@ export const createOrder = async (payload) => {
 };
 
 // Récupérer les détails d'une commande par ID
-export const getOrderDetails = async (orderId) => {
-    console.log(`🔹 [getOrderDetails] Appel API lancé pour orderId : ${orderId}`);
+export const getOrderDetailsRecap = async (orderId) => {
+    console.log(`🔹 [getOrderDetailsRecap] Appel API lancé pour orderId : ${orderId}`);
 
     try {
         const response = await authApi.get(`/orders/${orderId}`);
@@ -28,10 +28,12 @@ export const getOrderDetails = async (orderId) => {
     }
 };
 
-export const getUserOrders = async () => {
+export const showAllUserOrderDetails = async (userId) => {
     try {
-        return await authApi.get(`/orders/userOrderList`)
+        return await authApi.get(`/orders/user/${userId}`)
     } catch (err) {
+        console.error("❌ [getUserOrders] Erreur lors de l'appel API :", err.response ? err.response.data : err.message);
+
         throw err
     }
 }

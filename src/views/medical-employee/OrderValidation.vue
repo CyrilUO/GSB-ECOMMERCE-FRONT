@@ -67,10 +67,10 @@
       <!-- Boutons -->
       <div class="flex justify-center gap-4 mt-6">
         <button
-            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 shadow-md"
-            @click="downloadPDF"
+            class="bg-yellow-600 text-white px-6 py-2 rounded-md hover:bg-yellow-500 shadow-md"
+            @click="goToOrderList"
         >
-          Télécharger en PDF
+          Historique des commandes
         </button>
         <button
             class="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 shadow-md"
@@ -88,13 +88,17 @@ import { ref } from "vue";
 import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
 import { useRoute, useRouter } from "vue-router";
 import { onMounted } from "vue";
-import { getOrderDetails } from "@/services/order/orderService.js";
+import { getOrderDetailsRecap } from "@/services/order/orderService.js";
 
 const router = useRouter();
 const route = useRoute();
 
 const goToHome = () => {
   router.push("/medical-employee/landing-page");
+};
+
+const goToOrderList = () => {
+  router.push("/medical-employee/order-list");
 };
 
 const companyName = ref("GSB");
@@ -107,18 +111,17 @@ const orderDeliveryAddress = ref("");
 const orderUserName = ref("");
 const orderData = ref(null);
 
-const downloadPDF = () => {
-  alert("Fonction de téléchargement PDF en cours de développement.");
-};
 
 onMounted(async () => {
+  document.body.classList.add("page-produits-body"); // Retrait de la classe au body
+
   if (!orderId.value) {
     alert("Une erreur est survenue : l'identifiant de la commande est introuvable.");
     return;
   }
 
   try {
-    const response = await getOrderDetails(orderId.value);
+    const response = await getOrderDetailsRecap(orderId.value);
 
     orderData.value = response.data;
 
@@ -138,6 +141,7 @@ onMounted(async () => {
 });
 </script>
 
-<style>
-/* Ajoutez des ajustements globaux si nécessaire */
-</style>
+<style scoped>
+.page-produits-body {
+  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+}</style>

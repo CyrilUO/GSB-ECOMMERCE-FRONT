@@ -6,25 +6,23 @@ import {useUserStore} from "@/store/userStore.js";
 
 /**
  * @type {string}
- * @description URL pour taper sur l'endpoint back qui permet de récupérer le token d'authentification.
- */
-const API_TOKEN_URL = "http://localhost:8080/auth/login";
-
-/**
- * @type {string}
  * @description URL de base pour toutes les requêtes vers l'API principale.
  */
+const API_TOKEN_URL = "http://localhost:8080/auth/login";
 const BACK_API_REQUEST_BASE_URL = "http://localhost:8080/api";
-
-/**
- * @type {string}
- * @description Type de contenu envoyé dans les requêtes HTTP.
- */
+export const LOGIN_API_REQUEST_URL = "http://localhost:8080/auth/login";
 const CONTENT_TYPE = "application/json";
 
 /**
  * @description Instance Axios configurée pour communiquer avec l'API, incluant un intercepteur pour ajouter le token d'authentification.
  */
+export const loginApi = axios.create({
+    baseURL: LOGIN_API_REQUEST_URL,
+    headers: {
+        "Content-Type": CONTENT_TYPE
+    }
+});
+
 export const authApi = axios.create({
     baseURL: BACK_API_REQUEST_BASE_URL,
     headers: {"Content-Type": CONTENT_TYPE},
@@ -46,7 +44,6 @@ authApi.interceptors.request.use(async (config) => {
 });
 
 
-
 authApi.interceptors.response.use(
     async (response) => response,
     async (error) => {
@@ -62,7 +59,6 @@ authApi.interceptors.response.use(
 );
 
 
-
 /**
  * @function fetchToken
  * @description Récupère le token JWT, soit depuis le stockage local s'il existe, soit en le demandant à l'API.
@@ -75,6 +71,8 @@ const fetchToken = async () => {
         const payload = parseJwt(existingToken);
 
         if (payload && payload.exp * 1000 > Date.now()) {
+            console.log("Token valide.");
+
             return existingToken;
         } else {
             console.warn("Token expiré. Tentative de renouvellement.");

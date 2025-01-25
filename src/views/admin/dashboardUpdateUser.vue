@@ -126,7 +126,7 @@ const fetchSelectedUserData = async () => {
   }
 };
 
-// Fonction pour charger les rôles
+/* On rcupère les rôles depuis l'API pour voir l'option des rôles (case où de nouveaux rôles seraient créés!*/
 const fetchRoles = async () => {
   try {
     const response = await fetchRolesService();

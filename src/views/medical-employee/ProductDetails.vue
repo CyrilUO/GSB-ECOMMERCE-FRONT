@@ -218,13 +218,19 @@ const redirectToPreviousPage = () => {
   router.go(-1)
 }
 
-onMounted(fetchProductDetails);
+onMounted(async () => {
+  document.body.classList.add("page-produits-body")
+  await fetchProductDetails()
+});
 
 
 </script>
 
 
 <style scoped>
+.page-produits-body {
+  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+}
 /* Retirer les flèches de l'input number */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

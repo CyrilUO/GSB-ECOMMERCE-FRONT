@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import {getCurrentUserRequest} from "@/services/users/userService.js";
+import {getCurrentUserRequest, getUserDataByIdRequest} from "@/services/users/userService.js";
+import {parseJwt} from "@/services/api.js";
 
 export const useUserStore = defineStore("user", () => {
     const userId = ref(null);
@@ -15,44 +16,33 @@ export const useUserStore = defineStore("user", () => {
     // Récupère les données utilisateur
     const fetchCurrentUser = async () => {
         try {
-            isLoading.value = true;
-
-            const response = await getCurrentUserRequest();
-            console.log("Donnée fetchée dans le user store :", response.data);
-            console.log("Donnée fetchée dans le user store pour le userId :", response.data.userId);
-
-
-            // Vérifiez si `response.data` contient les données minimales nécessaires
-            if (response.data) {
-                userId.value = response.data.userId;
-                userName.value = response.data.userName || "Inconnu";
-                userSurname.value = response.data.userSurname || "";
-
-                // Gérer le cas où `role` ou ses sous-propriétés sont absents
-                if (response.data.role) {
-                    roleId.value = response.data.role.roleId || null;
-                    roleName.value = response.data.role.roleName || "";
-                } else {
-                    console.warn("Les données de rôle sont absentes pour l'utilisateur.");
-                    roleId.value = null;
-                    roleName.value = ""; // Valeurs par défaut si le rôle est absent
-                }
-
-                console.log("Utilisateur connecté :", {
-                    userId: userId.value,
-                    userName: userName.value,
-                    roleName: roleName.value,
-                });
-            } else {
-                throw new Error("Les données utilisateur sont incomplètes ou absentes.");
+            const payload = parseJwt(authToken.value);
+            if (!payload) {
+                throw new Error("Token invalide ou expiré.");
             }
+
+            userId.value = payload.userId;
+            const userEmail = payload.sub;
+
+            // Appel API pour récupérer des informations complémentaires
+            const response = await getUserDataByIdRequest(userId.value);
+            const user = response.data;
+
+            userName.value = user.userName;
+            roleName.value = user.role.roleName;
+
+            console.log("Utilisateur connecté :", {
+                userId: userId.value,
+                userEmail,
+                userName: userName.value,
+                roleName: roleName.value,
+            });
         } catch (err) {
-            console.error("Erreur lors de la récupération de l'utilisateur :", err);
-            error.value = err.message || "Erreur inconnue.";
-        } finally {
-            isLoading.value = false;
+            console.error("Erreur lors de la récupération de l'utilisateur :", err.message);
+            clearCurrentUser();
         }
     };
+
 
 
 
@@ -65,7 +55,7 @@ export const useUserStore = defineStore("user", () => {
         roleId.value = "";
         localStorage.removeItem("authToken"); // Supprime le token
         let tempStorage = localStorage.getItem("authToken")
-        console.log("Contenu du token storé :" + tempStorage)
+        console.log("Contenu du token storé : " + tempStorage)
         console.log("Données utilisateur et token réinitialisés.");
     };
 

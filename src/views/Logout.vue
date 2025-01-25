@@ -45,6 +45,14 @@ const logout = async () => {
     userStore.clearCurrentUser();
     userStore.clearSessionData();
 
+
+    // await userStore.$reset();
+
+
+
+    console.log("reset des données fait !")
+    console.log("userStore après déconnexion :", userStore);
+
     await router.push('/login');
   } catch (error) {
     console.error("Une erreur est survenue lors de la déconnexion :", error);

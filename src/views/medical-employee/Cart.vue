@@ -1,5 +1,6 @@
 <template>
-  <Navbar />
+  <Navbar/>
+
   <div class="min-h-screen mx-auto p-6">
     <!-- Titre -->
     <h1 v-if="orders && orders.length" class="text-2xl font-bold mb-4">
@@ -8,17 +9,18 @@
 
     <!-- Message si le panier est vide -->
     <div v-if="!orders.length" class="flex flex-col items-center justify-center mt-12">
-      <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg shadow-md w-full max-w-md">
-        <div class="flex items-center space-x-5 ml-1.5">
-          <!-- Texte du message -->
-          <p class="text-lg font-semibold">
-            Votre panier est vide.<br />
-            <span class="text-blue-500 font-medium">Veuillez choisir un produit pour finaliser votre commande</span>
-          </p>
+      <div class="border border-red-700 bg-red-100 text-red-600 p-6 rounded-lg shadow-lg max-w-md text-center">
+        <div class="flex flex-col items-center">
+          <h2 class="text-xl font-bold mb-2 text-red-900">Votre panier est vide ! 😔</h2>
         </div>
+        <button
+            @click="backToCarouselProduct"
+            class="mt-6 bg-red-700 text-white px-6 py-2 rounded-lg shadow hover:bg-red-900"
+        >
+          Retourner à la page des produits
+        </button>
       </div>
     </div>
-
 
     <!-- Tableau des commandes -->
     <table
@@ -94,22 +96,31 @@
     <!-- Boutons d'action -->
     <div class="flex justify-end mt-6">
       <button
-          @click="backToCarouselProduct"
-          class="bg-orange-500 hover:bg-orange-300 mr-6 text-white px-6 py-3 rounded-md shadow-lg"
-      >
-        Retour Page Produits
-      </button>
-      <button
           v-if="orders.length"
           @click="finalizeOrder"
           class="bg-blue-500 hover:bg-blue-300 text-white px-6 py-3 rounded-md shadow-lg"
       >
         Finalisez votre commande
       </button>
-
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Ajout d'un effet léger pour l'encadré */
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.hover\:bg-blue-400:hover {
+  background-color: #60a5fa;
+}
+
+
+.page-produits-body {
+  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+}
+</style>
+
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
@@ -118,6 +129,7 @@ import { useCartStore } from "@/store/cartStore.js";
 import { useUserStore } from "@/store/userStore.js";
 import Navbar from "../../components/medicalEmployeeComponent/navbar.vue";
 import { createOrder } from "@/services/order/orderService.js";
+import NavBar from "@/components/medicalEmployeeComponent/navbar.vue";
 
 // Stores
 const router = useRouter();
@@ -133,9 +145,18 @@ const selectedAddress = ref("");
 
 // Récupération de l'utilisateur connecté
 onMounted(async () => {
-  await userStore.fetchCurrentUser();
-  console.log("l'userId est : " + userId)// Récupérer les informations utilisateur
+  document.body.classList.add("page-produits-body"); // Retrait de la classe au body
+  try {
+    await userStore.fetchCurrentUser();
+    console.log("l'userId est : " + userId)// Récupérer les informations utilisateur
+
+  } catch (e){
+    console.error(e)
+  }
+
 });
+
+
 
 const removeItem = (productId) => {
   console.log("ID du produit à supprimer :", productId);
@@ -215,4 +236,4 @@ watch(
 );
 </script>
 
-<style></style>
+
