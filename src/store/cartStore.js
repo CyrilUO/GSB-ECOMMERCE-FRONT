@@ -24,8 +24,11 @@ export const useCartStore = defineStore("cart", () => {
         if (index !== -1) {
             cart.value.splice(index, 1);
             console.log("Produit supprimé. Panier mis à jour :", cart.value);
+            // Accès correct au prix total recalculé
+            console.log("Prix total après suppression :", totalPrice.value);
         }
     };
+
 
     const applyQuantityChosenToStock = (productId) => {
         const item = cart.value.find((item) => item.product.productId === productId);
