@@ -22,6 +22,7 @@ import { ref, onMounted } from "vue";
 
 import {useCartStore} from "@/store/cartStore.js";
 import {useUserStore} from "@/store/userStore.js";
+import {parseJwt} from "@/services/api.js";
 
 const userStore = useUserStore();
 
@@ -60,8 +61,6 @@ const logout = async () => {
 };
 
 
-
-
 const startCountdown = () => {
   const interval = setInterval(() => {
     if (countdown.value > 1) {
@@ -74,13 +73,32 @@ const startCountdown = () => {
 };
 
 onMounted(async () => {
-  await userStore.fetchCurrentUser(); // Assurez-vous que les données utilisateur sont chargées
-  startCountdown();
-  console.log("Valeurs actuelles dans userStore :", {
-    userId: userStore.userId,
-    roleName: userStore.roleName,
-  });
+  const token = localStorage.getItem("authToken");
 
+  if (!token) {
+    console.log("🔹 Aucun token détecté, pas besoin de fetch l'utilisateur.");
+    startCountdown();
+    return;
+  }
+
+  const payload = parseJwt(token);
+  if (!payload || payload.exp * 1000 < Date.now()) {
+    console.log("🔹 Token expiré, suppression immédiate.");
+    userStore.clearCurrentUser();
+    localStorage.removeItem("authToken");
+    sessionStorage.removeItem("authToken");
+    startCountdown();
+    return;
+  }
+
+  try {
+    console.log("🔹 Token valide, récupération de l'utilisateur...");
+    await userStore.fetchCurrentUser();
+  } catch (error) {
+    console.warn("⚠️ Erreur lors du fetch de l'utilisateur : ", error);
+  }
+
+  startCountdown();
 });
 
 

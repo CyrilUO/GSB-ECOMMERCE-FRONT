@@ -1,8 +1,24 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import {ref, computed, watch} from "vue";
 
 export const useCartStore = defineStore("cart", () => {
     const cart = ref([]);
+
+    const loadCartFromStorage = () => {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+            cart.value = JSON.parse(storedCart);
+        }
+    };
+
+    watch(
+        cart,
+        (newCart) => {
+            localStorage.setItem("cart", JSON.stringify(newCart));
+            console.log("wtahcer du loading on")
+        },
+        { deep: true }
+    );
 
     // Ajouter un produit au panier
     const addToCart = (product, quantity) => {
@@ -46,6 +62,8 @@ export const useCartStore = defineStore("cart", () => {
         cart.value = [];
         console.log("Vidage du panier")
     }
+
+    loadCartFromStorage();
 
     return { cart, addToCart, removeFromCart, totalPrice, applyQuantityChosenToStock, clearCartStore };
 });

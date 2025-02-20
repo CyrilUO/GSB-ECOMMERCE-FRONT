@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <NavBar props="wislist"/>
   <div class="py-10 flex items-center justify-center">
     <div class="w-full max-w-7xl pb-10">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-6">

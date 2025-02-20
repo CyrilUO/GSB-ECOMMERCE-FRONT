@@ -214,7 +214,7 @@ const finalizeOrder = async () => {
   const payload = {
     userId: userStore.userId,
     deliveryAddressId: getAddressId(selectedAddress.value),
-    orderTotalPrice: totalOrderPrice,
+    orderTotalPrice: cartStore.totalPrice,
     items: orders.map((item) => ({
       productId: item.product.productId,
       orderedItemsQuantity: item.quantity,

@@ -43,6 +43,13 @@ export const useUserStore = defineStore("user", () => {
         }
     };
 
+    // const getConnectedUserIdAndRole = () => {
+    //     const store = useUserStore()
+    //     const connectedUserRole = user.role.roleName
+    //     console.log(`getting the current connected user roleId : ${connectedUser}`)
+    //     return connectedUser
+    // }
+
 
 
 
@@ -97,6 +104,7 @@ export const useUserStore = defineStore("user", () => {
         setAuthToken,
         hasRole,
         isUserLoaded,
-        clearSessionData
+        clearSessionData,
+        // getConnectedUser
     };
 });

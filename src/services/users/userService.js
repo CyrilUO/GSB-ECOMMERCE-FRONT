@@ -1,4 +1,5 @@
-import { authApi } from "@/services/api.js";
+import {authApi, parseJwt} from "@/services/api.js";
+import {useUserStore} from "@/store/userStore.js";
 
 // Récupérer tous les utilisateurs
 export const getAllUsersRequest = async () => {
@@ -40,11 +41,32 @@ export const addUserRequest = async (user) => {
     }
 };
 
-// Mettre à jour un utilisateur par ID
+
 export const updateUserRequest = async (user) => {
-    console.log(`🔹 [updateUserRequest] Appel API lancé pour mettre à jour l'utilisateur ID: ${user.userId} avec les données :`, user);
+    console.log(`🔹 [updateUserRequest] Mise à jour de l'utilisateur ID: ${user.userId} avec les données :`, user);
+
+    // ✅ S'assurer d'envoyer le rôle existant
+    const storedToken = localStorage.getItem("authToken");
+    const storedUser = storedToken ? parseJwt(storedToken) : null;
+
+    if (storedUser && !user.roleId) {
+        console.log("🔹 Ajout du rôle existant à la requête pour éviter une erreur.");
+        user.roleId = storedUser.roleId;  // Ajout du rôle existant
+    }
+
     try {
         const response = await authApi.put(`/users/${user.userId}`, user);
+
+        if (response.data.newToken) {
+            if (storedUser && storedUser.userId == user.userId) {
+                console.log("✅ Mise à jour du token car l'utilisateur connecté a été modifié.");
+                localStorage.setItem("authToken", response.data.newToken);
+                authApi.defaults.headers.common["Authorization"] = `Bearer ${response.data.newToken}`;
+            } else {
+                console.log("⚠️ Le token NE sera PAS mis à jour car l'utilisateur modifié est différent.");
+            }
+        }
+
         console.log("✅ [updateUserRequest] Réponse API :", response.data);
         return response;
     } catch (error) {
@@ -52,6 +74,8 @@ export const updateUserRequest = async (user) => {
         throw error;
     }
 };
+
+
 
 // Supprimer un utilisateur par ID
 export const deleteUserRequest = async (id) => {

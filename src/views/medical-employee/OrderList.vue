@@ -1,7 +1,7 @@
 <template>
-  <NavBar class="h-fit" />
+  <NavBar class="h-fit"/>
   <div class="max-w-5xl w-full mx-auto mt-12 px-8 pt-8 pb-4 bg-white rounded-lg shadow-xl">
-    <h1 class="text-3xl font-extrabold mb-8 text-gray-900">Historique des Commandes</h1>
+    <h1 class="text-3xl font-extrabold mb-8 text-gray-900">Historique des Commandes 📜</h1>
 
     <!-- Affichage des états -->
     <div v-if="isLoading" class="text-center text-gray-500">
@@ -21,9 +21,18 @@
         <!-- En-tête de commande -->
         <div class="flex justify-between items-center">
           <div>
-            <p class="font-bold text-xl text-gray-800">Commande n°{{ order.orderId }}</p>
+            <p class="font-bold text-xl text-gray-800">Commande n°{{ order.orderId }} 📦</p>
             <p class="text-gray-600">
-              <span class="font-semibold">Statut :</span> {{ order.orderStatus }}
+            <span
+                class="font-semibold"
+                :class="{
+                'text-yellow-600': order.orderStatus === 'En attente',
+                'text-red-600': order.orderStatus === 'Retardée',
+                'text-green-600': order.orderStatus === 'Validée'
+              }"
+            >
+              Statut : {{ order.orderStatus }}
+            </span>
             </p>
             <p class="text-gray-600">
               <span class="font-semibold">Total :</span> {{ order.totalOrderPrice.toFixed(2) }} €
@@ -31,14 +40,14 @@
           </div>
           <button
               @click="toggleDetails(order.orderId)"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+              class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-500 transition"
           >
             {{ expandedOrderId === order.orderId ? "Masquer les détails" : "Voir les détails" }}
           </button>
         </div>
 
         <!-- Détails de la commande -->
-        <div v-if="expandedOrderId === order.orderId" class="mt-6 bg-white border-t pt-6">
+        <div v-if="expandedOrderId === order.orderId" class="mt-6 bg-white border-t py-2">
           <p class="text-gray-700">
             <span class="font-semibold">Date de commande :</span> {{ order.orderCreatedAt }}
           </p>
@@ -118,8 +127,8 @@
 
 <script setup>
 import {ref, onMounted, onBeforeUnmount} from "vue";
-import { useUserStore } from "@/store/userStore.js";
-import { showAllUserOrderDetails } from "@/services/order/orderService.js";
+import {useUserStore} from "@/store/userStore.js";
+import {showAllUserOrderDetails} from "@/services/order/orderService.js";
 import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
 
 const orders = ref([]);

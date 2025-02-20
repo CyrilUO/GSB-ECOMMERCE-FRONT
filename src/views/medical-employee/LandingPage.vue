@@ -7,7 +7,6 @@
     <!-- Hero Section -->
     <header class="relative h-full w-full">
 
-      <!-- Background Image -->
       <div class="absolute inset-0">
         <img
             src="@/assets/images/med-bg-min.jpg"
@@ -16,24 +15,20 @@
         />
       </div>
 
-      <!-- Glassmorphism Card -->
       <div class="relative z-10 flex items-center justify-center h-full px-6">
         <div
             class="glass-card max-w-3xl w-full p-8 md:p-12 rounded-3xl text-center text-white shadow-lg animate-fade-in-up"
         >
-          <!-- Title -->
           <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
             BIENVENUE SUR<br />
             <span class="text-blue-500">LA PLATEFORME</span><br />
             <span class="text-blue-800">GSB ECOMMERCE</span>
           </h1>
 
-          <!-- Subtitle -->
           <p class="text-lg md:text-2xl mb-8 opacity-90">
              Explorez notre large gamme de produits médicaux pour professionnels de santé, avec une expérience utilisateur fluide et moderne.
           </p>
 
-          <!-- CTA Button -->
           <router-link
               to="/medical-employee/carousel-products"
               class="inline-block py-3 px-8 bg-blue-600 rounded-full text-lg font-semibold hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105"
@@ -62,7 +57,7 @@ import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
   color: #ffffff; /* Texte blanc pour contraste */
 }
 
-/* Animation Fade In Up */
+/* Animation Fade In */
 @keyframes fade-in-up {
   from {
     opacity: 0;

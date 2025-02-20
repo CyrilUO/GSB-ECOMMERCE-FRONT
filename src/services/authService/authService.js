@@ -15,8 +15,10 @@ export const loginAndAuthenticate = async (user) => {
             const token = response.data;
             console.log("Token reçu :", token);
 
-            // Sauvegarde du token
+            localStorage.removeItem("authToken");
             localStorage.setItem("authToken", token);
+            authApi.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Mise à jour immédiate du header
+
 
             // Décodage du token
             const decryptedToken = parseJwt(token);
@@ -45,12 +47,12 @@ export const loginAndAuthenticate = async (user) => {
     }
 };
 
-export const invalidateToken = async () => {
-    console.log("🔹 [Invalidate token] Appel API lancé pour invalider le token");
-    try {
-        const response = await authApi.post("/api/logout");
-        console.log("response : ", response.data)
-    } catch (error) {
-        console.error("Erreur lors de l'invalidation", error)
-    }
-}
+// export const invalidateToken = async () => {
+//     console.log("🔹 [Invalidate token] Appel API lancé pour invalider le token");
+//     try {
+//         const response = await authApi.post("/api/logout");
+//         console.log("response : ", response.data)
+//     } catch (error) {
+//         console.error("Erreur lors de l'invalidation", error)
+//     }
+// }

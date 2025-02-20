@@ -11,7 +11,6 @@
 
 <script setup>
 
-// TODO le router push ne doit pas renvoyé vers la page de login mais vers la dernière page consulté, utiliser les modules vue de Storage de session
 import { useRouter } from "vue-router";
 
 const router = useRouter();

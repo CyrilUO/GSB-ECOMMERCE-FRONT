@@ -33,30 +33,59 @@ export const authApi = axios.create({
  */
 authApi.interceptors.request.use(async (config) => {
     const userStore = useUserStore(); // Charge le store utilisateur
-    const token = userStore.authToken; // Récupère le token du store
+    const token = localStorage.getItem("authToken"); // Récupère directement depuis le localStorage
+
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     } else {
-        console.warn("Token manquant. Redirection vers login.");
-        await router.push("/logout");
+        console.warn("Token manquant. Nettoyage et redirection.");
+        userStore.clearCurrentUser();
+        localStorage.removeItem("authToken"); // Assure-toi qu'il est bien supprimé
+        return Promise.reject("Aucun token, arrêt des requêtes.");
     }
     return config;
 });
 
 
 authApi.interceptors.response.use(
-    async (response) => response,
+    async (response) => {
+        if (response.data && response.data.newToken) {
+            console.log("🔄 Mise à jour du token reçu après mise à jour utilisateur.");
+
+            // ✅ Mettre à jour immédiatement dans le store
+            const userStore = useUserStore();
+            userStore.setAuthToken(response.data.newToken);
+
+            // ✅ Mettre à jour localStorage pour éviter la déconnexion soudaine
+            localStorage.setItem("authToken", response.data.newToken);
+
+            authApi.defaults.headers.common["Authorization"] = `Bearer ${response.data.newToken}`;
+        }
+        return response;
+    },
     async (error) => {
         if (error.response && error.response.status === 401) {
+            console.warn("🚨 Token invalide ou expiré. Tentative de récupération...");
             const userStore = useUserStore();
-            console.warn("Token invalide ou expiré. Déconnexion en cours...");
-            userStore.clearCurrentUser();
-            localStorage.removeItem("authToken");
-            sessionStorage.removeItem("authToken");
+
+            try {
+                const newToken = await fetchToken();
+                if (newToken) {
+                    console.log("✅ Nouveau token récupéré, mise à jour immédiate.");
+                    authApi.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+                    return authApi(error.config);
+                }
+            } catch (refreshError) {
+                console.warn("❌ Impossible de récupérer un nouveau token. Déconnexion...");
+                userStore.clearCurrentUser();
+                localStorage.removeItem("authToken");
+                await router.push("/logout");
+            }
         }
         throw error;
     }
 );
+
 
 
 /**

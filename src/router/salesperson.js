@@ -1,5 +1,4 @@
 import dashboardSalesperson from "@/views/salesperson/dashboardSalesperson.vue";
-import dashboardCustomerMonitoring from "@/views/salesperson/dashboardCustomerMonitoring.vue";
 import dashboardOrder from "@/views/salesperson/dashboardOrder.vue";
 
 export const salespersonRoutes = [
@@ -11,18 +10,21 @@ export const salespersonRoutes = [
             requestedRole: "salesperson"
         },
         component: dashboardSalesperson,
-        redirect: '/salesperson/customer-monitoring',
+        redirect: '/salesperson/customer-monitoring', // Route par défaut
         children: [
             {
                 path: 'customer-monitoring',
-                component: dashboardCustomerMonitoring,
-                meta: {authRequired: true, requestedRole: "salesperson"}
-            },
-            {
-                path: 'customer-order',
+                name: 'CustomerMonitoring',
                 component: dashboardOrder,
-                meta: {authRequired: true, requestedRole: "salesperson"}
+                meta: { authRequired: true, requestedRole: "salesperson" }
             },
-        ],
-    },
+            // Vous pourrez ajouter d'autres routes enfants ici, par exemple :
+            // {
+            //   path: 'customer-order',
+            //   name: 'CustomerOrder',
+            //   component: dashboardAnotherComponent,
+            //   meta: { authRequired: true, requestedRole: "salesperson" }
+            // },
+        ]
+    }
 ];
