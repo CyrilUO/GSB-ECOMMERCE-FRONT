@@ -55,6 +55,39 @@ Voici un aperçu de la structure principale du projet :
 4. **Lancer le projet en mode développement** :
     ```bash
     npm run dev
+    ```
+---
+
+## 🐳 **Utilisation avec Docker** (Recommandé)
+
+Si vous souhaitez **exécuter l’application dans un conteneur Docker**, suivez ces étapes :
+
+### **1️⃣ Prérequis**
+- **Docker** installé sur votre machine ([Télécharger Docker](https://www.docker.com/get-started))
+- **Docker Compose** installé ([Guide d'installation](https://docs.docker.com/compose/install/))
+
+### **2️⃣ Démarrer l’Application avec Docker**
+Lancer l’application **sans installer Node.js ni npm** sur votre machine :
+
+```bash
+docker-compose up --build -d
+```
+L’application sera accessible à l’adresse : ➡️ http://localhost:5173
+
+### 3️⃣ Arrêter et Supprimer les Conteneurs
+- Pour arrêter l’application :
+```bash
+docker-compose down
+```
+- Pour supprimer les conteneurs, images et volumes inutilisés :
+```bash
+docker system prune -a
+```
+**🚀 Si vous ne voulez pas installer quoi que ce soit et juste tester l’application, exécutez**
+
+```sh
+docker run -d -p 5173:5173 --name gsb_front <SetDockerHubName>/gsb_front
+```
 
 ## ✨ Fonctionnalités Principales
 

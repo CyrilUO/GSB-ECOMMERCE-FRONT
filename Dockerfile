@@ -1,13 +1,18 @@
-# Étape 1 : Construire le projet Vue.js
-FROM node:20-alpine AS build
+# Use Node.js as the base image
+FROM node:20-alpine
+
+# Set the working directory inside the container
 WORKDIR /app
+
+# Copy package.json and install dependencies
 COPY package*.json ./
 RUN npm install
-COPY . .
-RUN npm run build
 
-# Étape 2 : Servir avec Nginx
-FROM nginx:1.25-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Copy the entire project into the container
+COPY . .
+
+# Expose the Vite development server port
+EXPOSE 5173
+
+# Start Vite in development mode
+CMD ["npm", "run", "dev"]
