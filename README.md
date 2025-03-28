@@ -7,7 +7,7 @@ Bienvenue dans le projet **GSB Front (Headless)** ! Ce projet utilise **Vue.js**
 ## 🧭 Sommaire
 - [📁 Structure du projet](#-structure-du-projet)
 - [📖 Répertoires](#-répertoires)
-- [Fichier importants](#-fichiers-importants)
+- [🪬Fichier importants](#-fichiers-importants)
 - [🚀 Installation](#-installation-et-lancement)
 - [🐳 Docker](#-docker-)
 - [📸 Apercu du projet](#-apercu-du-projet)
@@ -90,7 +90,7 @@ Pour l’instant, l’exécution se fait en local via npm run dev.
 | 📊 Dashboard Administrateur | ![](./docs/screenshots/admin/Analytics.png)       |
 | 🏠 Accueil Employé Médical  | ![](./docs/screenshots/medical/LandingPage.png)   |
 | 💊 PLP                      | ![](./docs/screenshots/medical/plp.png)           |
-| 🔍 Cart                     | ![](./docs/screenshots/medical/pdp.png)           |
+| 🔍 PDP                      | ![](./docs/screenshots/medical/pdp.png)           |
 | 🛒 Cart                     | ![](./docs/screenshots/medical/cart.png)          |
 | 💳 Order Recap              | ![](./docs/screenshots/medical/orderRecap.png)    |
 | 📋 OrderHistory             | ![](./docs/screenshots/medical/orderHistory.png)  |
