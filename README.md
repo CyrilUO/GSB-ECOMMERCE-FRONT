@@ -1,4 +1,4 @@
-# 🌟 Projet GSB Front (Headless) 🌟
+# ⌨ Projet GSB Front (Headless) ⌨
 
 Bienvenue dans le projet **GSB Front (Headless)** ! Ce projet utilise **Vue.js** avec **TailwindCSS** pour le frontend et suit une architecture modulaire et bien organisée. 🚀
 
