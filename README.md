@@ -15,6 +15,8 @@ Bienvenue dans le projet **GSB Front (Headless)** ! Ce projet utilise **Vue.js**
 - [📚 Technologies utilisées](#-technologies-utilisées)
 - [📦 Backend](#-backend)
 
+---
+
 ## 📁 Structure du Projet
 
 Voici un aperçu de la structure principale du projet :
@@ -69,6 +71,7 @@ Voici un aperçu de la structure principale du projet :
 Le projet Docker est en cours d’intégration.
 Pour l’instant, l’exécution se fait en local via npm run dev.
 
+---
 
 ## ✨ Fonctionnalités Principales
 
@@ -102,6 +105,8 @@ Pour l’instant, l’exécution se fait en local via npm run dev.
 - **TailwindCSS** : Styles CSS utilitaires pour une conception rapide.
 - **Vite** : Outil de build ultra rapide.
 - **Node.js** : Gestion des dépendances.
+
+---
 
 ## 📦 Backend
 Le backend Spring Boot est hébergé dans un dépôt séparé.
