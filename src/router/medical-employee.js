@@ -12,7 +12,7 @@ export const medicalEmployeeRoutes = [
         name: "Medical Employee",
         meta: {
             authRequired: true,
-            requestedRole: "medical-employee",
+            requestedRole: ["admin","medical-employee"],
         },
         component: RedirectView,
         redirect: "/medical-employee/landing-page",
@@ -23,7 +23,7 @@ export const medicalEmployeeRoutes = [
                 name: "Landing Page",
                 meta: {
                     authRequired: true,
-                    requestedRole: "medical-employee",
+                    requestedRole: ["admin","medical-employee"],
                 },
             },
             {
@@ -32,7 +32,7 @@ export const medicalEmployeeRoutes = [
                 name: "PLP",
                 meta: {
                     authRequired: true,
-                    requestedRole: "medical-employee",
+                    requestedRole: ["admin","medical-employee"]
                 },
             },
             {
@@ -41,7 +41,7 @@ export const medicalEmployeeRoutes = [
                 name: "PDP",
                 meta: {
                     authRequired: true,
-                    requestedRole: "medical-employee",
+                    requestedRole: ["admin","medical-employee"],
                 },
             },
             {
@@ -50,7 +50,7 @@ export const medicalEmployeeRoutes = [
                 name: "Cart Page",
                 meta: {
                     authRequired: true,
-                    requestedRole: "medical-employee",
+                    requestedRole: ["admin","medical-employee"]
                 },
             },
             {
@@ -59,7 +59,7 @@ export const medicalEmployeeRoutes = [
                 name: "Order Validation",
                 meta: {
                     authRequired: true,
-                    requestedRole: "medical-employee",
+                    requestedRole: ["admin","medical-employee"]
                 },
             },
             {
@@ -68,7 +68,7 @@ export const medicalEmployeeRoutes = [
                 name: "Order List",
                 meta: {
                     authRequired: true,
-                    requestedRole: "medical-employee",
+                    requestedRole: ["admin","medical-employee"]
                 },
             },
         ],

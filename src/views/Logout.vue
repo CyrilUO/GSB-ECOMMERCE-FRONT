@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-800">
+  <div class="flex flex-col items-center justify-center h-screen page-custo text-gray-800">
     <img
         src="../assets/images/common/logo_gsb.png"
         class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
     />
-    <div class="bg-white shadow-md rounded-lg p-6 text-center w-80">
+    <div class="bg-white shadow-md rounded-lg p-6 items-center text-center w-6/12 h-auto">
       <div class="loaderCusto mx-auto mb-4"></div>
       <h2 class="text-2xl font-bold mb-2">Déconnexion réussie</h2>
       <p class="text-sm text-gray-600 mb-4">
-        Vous serez redirigé vers la page de connexion dans {{ countdown }} seconde<span v-if="countdown > 1">s</span>.
+        Vous serez redirigé vers la page de connexion dans <span class="custo-countdown">{{ countdown }}</span> seconde<span v-if="countdown > 1">s</span>.
       </p>
       <p class="text-xs text-gray-500 italic">Merci d'avoir utilisé nos services.</p>
     </div>
@@ -16,9 +16,8 @@
 </template>
 
 <script setup>
-// TODO le logout doit appeler la fonction qui gère la logique de fin de session
 import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import {ref, onMounted, onUnmounted} from "vue";
 
 import {useCartStore} from "@/store/cartStore.js";
 import {useUserStore} from "@/store/userStore.js";
@@ -34,25 +33,22 @@ const countdown = ref(5);
 
 const logout = async () => {
   try {
-    console.log("userStore avant déconnexion :", userStore);
+    console.info("userStore avant déconnexion :", userStore);
 
     if (userStore.roleName === "medical-employee") {
-      cartStore.clearCartStore();
-      console.log("Panier vidé pour medical-employee");
+      await cartStore.clearCartStore();
+      console.info("Panier vidé pour medical-employee");
     } else {
-      console.log("Rôle non medical-employee, panier non vidé.");
+      console.info("Rôle non medical-employee, panier non vidé.");
     }
 
-    userStore.clearCurrentUser();
-    userStore.clearSessionData();
-
-
-    // await userStore.$reset();
+    await userStore.clearCurrentUser();
+    await userStore.clearSessionData();
 
 
 
-    console.log("reset des données fait !")
-    console.log("userStore après déconnexion :", userStore);
+    console.info("reset des données fait !")
+    console.trace("userStore après déconnexion :", userStore);
 
     await router.push('/login');
   } catch (error) {
@@ -76,14 +72,14 @@ onMounted(async () => {
   const token = localStorage.getItem("authToken");
 
   if (!token) {
-    console.log("🔹 Aucun token détecté, pas besoin de fetch l'utilisateur.");
+    console.info("Aucun token détecté, pas besoin de fetch l'utilisateur.");
     startCountdown();
     return;
   }
 
   const payload = parseJwt(token);
   if (!payload || payload.exp * 1000 < Date.now()) {
-    console.log("🔹 Token expiré, suppression immédiate.");
+    console.info("Token expiré, suppression immédiate.");
     userStore.clearCurrentUser();
     localStorage.removeItem("authToken");
     sessionStorage.removeItem("authToken");
@@ -92,10 +88,10 @@ onMounted(async () => {
   }
 
   try {
-    console.log("🔹 Token valide, récupération de l'utilisateur...");
+    console.log("Token valide, récupération de l'utilisateur...");
     await userStore.fetchCurrentUser();
   } catch (error) {
-    console.warn("⚠️ Erreur lors du fetch de l'utilisateur : ", error);
+    console.warn("Erreur lors du fetch de l'utilisateur : ", error);
   }
 
   startCountdown();
@@ -108,21 +104,47 @@ onMounted(async () => {
 
 <style scoped>
 
+
+.custo-countdown {
+  font-size: 14px;
+  font-weight: bold;
+  color: #9f7dea;
+  font-family: Magneto,serif ;
+}
+
+.page-custo {
+  background: linear-gradient(to right, #dbeafe, #93c5fd) !important;
+}
+
 .loaderCusto {
-  border: 4px solid #f3f3f3; /* Couleur de l'arrière-plan */
-  border-top: 4px solid #285494; /* Couleur de l'animation */
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #92d4ff;
+  border-block-color: #031f48;
+  border-inline-color: #4e00ff;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+  animation: spin 1.2s linear infinite;
+}
+
+
+.loaderCusto::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 2px dashed #92d4ff;
+  border-radius: 50%;
+  animation: spinReverse 1.5s linear infinite;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinReverse {
+  100% { transform: rotate(-360deg); }
 }
 </style>

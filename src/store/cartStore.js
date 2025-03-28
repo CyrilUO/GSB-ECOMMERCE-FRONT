@@ -11,18 +11,20 @@ export const useCartStore = defineStore("cart", () => {
         }
     };
 
+/* Pas d'altération de données */
     watch(
         cart,
         (newCart) => {
             localStorage.setItem("cart", JSON.stringify(newCart));
             console.log("wtahcer du loading on")
         },
+        /* deep : true  = détecte les changements et les affiche dynamiquement */
+        /* Check le propriétés internes de notre cart[] */
         { deep: true }
     );
 
-    // Ajouter un produit au panier
     const addToCart = (product, quantity) => {
-        console.log("Produit ajouté :", product, "Quantité :", quantity);
+        console.info("Produit ajouté :", product, "Quantité :", quantity);
         const existingItem = cart.value.find((item) => item.product.productId === product.productId);
         if (existingItem) {
             console.log("Produit existant, mise à jour de la quantité");
@@ -52,6 +54,7 @@ export const useCartStore = defineStore("cart", () => {
         return item ? item.quantity : 0;
     };
 
+    /* On utilise le getter pour récuperer un résultat de valeurs réactives en mode readonly*/
     const totalPrice = computed(() => {
         const total = cart.value.reduce((total, item) => total + item.product.productPrice * item.quantity, 0);
         console.log("Prix total du panier :", total);

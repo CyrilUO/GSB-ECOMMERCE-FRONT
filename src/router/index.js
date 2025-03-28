@@ -30,7 +30,6 @@ export default router;
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem("authToken");
-    console.log("Contenu du session storage", sessionStorage)
     console.log("Contenu du local storage" , localStorage)
 
     // Vérifie si l'utilisateur est authentifié
@@ -57,16 +56,26 @@ function isAuthenticated(token) {
     const payload = parseJwt(token);
     if (!payload || payload.exp * 1000 <= Date.now()) {
         console.warn("Token expiré.");
-        localStorage.removeItem("authToken"); // Supprime le token expiré
+        localStorage.removeItem("authToken");
         return false;
     }
     return true;
 }
 
-// Fonction utilitaire pour vérifier le rôle requis
-function hasRequiredRole(token, requiredRole) {
+function hasRequiredRole(token, requiredRoles) {
     const userRole = parseJwt(token)?.roleName?.toLowerCase();
-    return userRole === requiredRole.toLowerCase();
+
+    if (!userRole || !requiredRoles) return false;
+
+    if (typeof requiredRoles === "string") {
+        return userRole === requiredRoles.toLowerCase();
+    }
+
+    if (Array.isArray(requiredRoles)) {
+        return requiredRoles.map(role => role.toLowerCase()).includes(userRole);
+    }
+
+    return false;
 }
 
 

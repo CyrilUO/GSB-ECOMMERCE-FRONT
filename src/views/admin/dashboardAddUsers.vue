@@ -1,40 +1,38 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-4">Ajouter un Utilisateur</h1>
-    <p v-if="successMessage" class="bg-green-500 text-white font-semibold rounded-lg py-2 px-4 text-center mb-2">
-      {{ successMessage }}</p>
-    <p v-else-if="failureMessage" class="bg-red-700 text-white font-semibold rounded-lg py-2 px-4 text-center mb-2">
-      {{ failureMessage }}</p>
+  </div>
+  <div>
     <form @submit.prevent="registerNewUser">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Nom de l'utilisateur</label>
         <input v-model="userSurname" type="text" placeholder="Nom"
                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-               required>
+        >
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Prénom de l'utilisateur</label>
-        <input v-model="userName" type="text" placeholder="Prénom" maxlength="150"
+        <input v-model="userName" type="text" placeholder="Prénom"
                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-               required>
+        >
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Email de l'utilisateur</label>
         <input v-model="userEmail" placeholder="Email"
                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-               required>
+        >
       </div>
-      <div class="mb-4">
+      <div class="mb-4 relative">
         <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-        <input v-model="userPassword" placeholder="Mot de passe"
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-               required>
+        <input v-model="userPassword" placeholder="Mot de passe" type="password"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
       </div>
       <div class="mb-4 relative">
         <label class="block text-gray-700 text-sm font-bold mb-2">Rôle utilisateur</label>
         <select v-model="userRole" name="role"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required>
+        >
           <option v-for="role in roles" :key="role.roleId" :value="role.roleId">
             {{ role.roleName }}
           </option>
@@ -76,14 +74,10 @@ const userPassword = ref('')
 const userRole = ref('')
 const roles = ref([])
 
-const successMessage = ref('')
-const failureMessage = ref('')
-
 const sanitizeInputUser = (string) => {
   return DOMPurify.sanitize(string)
 }
 
-console.log("Valeur sélectionnée pour le rôle :", userRole.value);
 
 const registerNewUser = async () => {
 
@@ -93,51 +87,22 @@ const registerNewUser = async () => {
       userName: sanitizeInputUser(userName.value),
       userEmail: sanitizeInputUser(userEmail.value),
       userPassword: sanitizeInputUser(userPassword.value),
-      roleId: parseInt(userRole.value) // Envoyer directement le roleId attendu par le backend
+      roleId: parseInt(userRole.value)
     };
-
-
-    const response = await addUserRequest(newUser);
-
-    console.log("Nouvel utilisateur ajouté data :", response)
-
-    if (response.status === 200) {
-
-      userSurname.value = "";
-      userName.value = "";
-      userEmail.value = "";
-      userPassword.value = "";
-      userRole.value = "";
-
-      successMessage.value = `L'utilisateur ${newUser.userName} ${newUser.userSurname} a été ajouté avec succès !`;
-
-      await refreshMessage();
-    } else {
-      console.error("❌ Erreur lors de l'ajout de l'utilisateur :", response.data);
-
-    }
-
+    return await addUserRequest(newUser);
 
   } catch (error) {
-    console.error("❌ Erreur lors de l'ajout de l'utilisateur :", error);
-    failureMessage.value = `Une erreur s'est produite. Le nouvel utilisateur n'a pas été ajouté!`;
-    await refreshMessage();
-
+    console.error(" Erreur lors de l'ajout de l'utilisateur :", error);
   }
 };
 
-const refreshMessage = async () => {
-  setTimeout(() => {
-    failureMessage.value = "";
-  }, 5000);
-}
 
 onMounted(async () => {
   try {
     const response = await fetchRoles();
     roles.value = response.data;
   } catch (error) {
-    console.error("❌ Erreur lors de la récupération des rôles :", error);
+    console.error("Erreur lors de la récupération des rôles :", error);
   }
 });
 

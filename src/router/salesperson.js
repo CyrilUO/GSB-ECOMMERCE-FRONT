@@ -10,7 +10,7 @@ export const salespersonRoutes = [
             requestedRole: "salesperson"
         },
         component: dashboardSalesperson,
-        redirect: '/salesperson/customer-monitoring', // Route par défaut
+        redirect: '/salesperson/customer-monitoring',
         children: [
             {
                 path: 'customer-monitoring',
@@ -18,13 +18,6 @@ export const salespersonRoutes = [
                 component: dashboardOrder,
                 meta: { authRequired: true, requestedRole: "salesperson" }
             },
-            // Vous pourrez ajouter d'autres routes enfants ici, par exemple :
-            // {
-            //   path: 'customer-order',
-            //   name: 'CustomerOrder',
-            //   component: dashboardAnotherComponent,
-            //   meta: { authRequired: true, requestedRole: "salesperson" }
-            // },
         ]
     }
 ];

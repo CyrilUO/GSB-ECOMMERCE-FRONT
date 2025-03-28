@@ -1,20 +1,17 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <!-- Navigation -->
     <nav class="bg-blue-900 text-white py-4">
       <div class="flex justify-around items-center">
-        <!-- Logo -->
         <div class="flex items-center">
           <img src="../../assets/images/common/logo_gsb.png" alt="logo" class="h-10 mr-4">
         </div>
 
-        <!-- Titre -->
         <div>
           <h2 class="font-extrabold">Dashboard Administrateur</h2>
         </div>
 
-        <!-- Menu burger -->
-        <div class="max-tablet:block">
+        <!-- Menu burger start ici  -->
+        <div class="max-phone:block">
           <button v-if="!menuOpen" @click="toggleMenu" class="text-white focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -28,10 +25,11 @@
         </div>
       </div>
       <aside
-          class="absolute inset-y-0 left-0 w-60 bg-gray-800 text-white py-8 px-6 flex-shrink-0 max-tablet:hidden z-50 transform transition-transform duration-300"
+          class="fixed inset-y-0 left-0 w-60 bg-gray-800 text-white py-8 px-6 z-50 transform transition-transform duration-300 ease-in-out"
           :class="menuOpen ? 'translate-x-0' : '-translate-x-full'"
       >
-        <h2 class="text-xl font-bold mb-6">TABLEAU DE BORD</h2>
+
+      <h2 class="text-xl font-bold mb-6">TABLEAU DE BORD</h2>
         <nav class="flex flex-col space-y-4">
           <router-link
               :class="{ 'bg-yellow-600 text-white': route.path === '/admin/dashboard-analytics', 'bg-gray-700' : route.path !== '/admin/dashboard-analytics'}"
@@ -71,9 +69,6 @@
         </nav>
       </aside>
     </nav>
-
-
-      <!-- Barre latérale (Mobile) -->
 
 
       <!-- Vue principale -->

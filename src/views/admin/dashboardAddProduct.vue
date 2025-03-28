@@ -1,11 +1,6 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-4">Ajouter un Produit</h1>
-    <div class="flex justify-center">
-      <p v-if="successMessage"           class="bg-green-500 text-white font-semibold rounded-lg py-2 px-4 text-center mt-4 mb-4"
-      >{{ successMessage }}</p>
-      <p v-else-if="failureMessage" class="bg-red-500 text-white font-semibold rounded-lg py-2 px-4 text-center mb-4">{{ failureMessage }}</p>
-    </div>
     <form @submit.prevent="registerNewProduct">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2">Nom du produit</label>
@@ -54,8 +49,7 @@ const productName = ref('');
 const productDescription = ref('');
 const productPrice = ref(0);
 const productStock = ref(0);
-const successMessage = ref('');
-const failureMessage = ref('');
+
 
 
 const sanitizeStringInput = (string) => {
@@ -73,31 +67,10 @@ const registerNewProduct = async () => {
     };
 
     if (newProduct.productName && newProduct.productDescription) {
-      const response = await addProductRequest(newProduct);
-
-      productName.value = '';
-      productDescription.value = '';
-      productPrice.value = 0;
-      productStock.value = 0;
-
-      successMessage.value = `Le produit ${newProduct.productName} a été ajouté avec succès !`;
-
-      setTimeout(() => {
-        successMessage.value = '';
-      }, 5000);
-    } else {
-      failureMessage.value = `Le produit sélectionné n'a pu être ajouté`;
-      setTimeout(() => {
-        failureMessage.value = '';
-      }, 5000);
+      return await addProductRequest(newProduct);
     }
-
   } catch (error) {
     console.error('Erreur lors de l\'ajout du produit :', error);
-
-    setTimeout( () =>{
-      failureMessage.value =''
-    }, 5000);
   }
 };
 </script>

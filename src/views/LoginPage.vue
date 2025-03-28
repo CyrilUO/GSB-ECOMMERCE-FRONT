@@ -43,7 +43,6 @@
           </button>
         </form>
 
-        <!-- Conteneur de message d'erreur avec hauteur fixe -->
         <div
             class="text-wrap text-red-500 text-center mt-4"
             style="min-height: 20px; line-height: 20px;"
@@ -51,7 +50,6 @@
           <p v-if="loginError">{{ loginError }}</p>
         </div>
 
-        <!-- Lien pour afficher la popup -->
         <div class="flex justify-end bg-amber-50 mt-4">
           <a
               href="#"
@@ -64,8 +62,7 @@
       </div>
     </div>
 
-    <!-- Popup lorsque le boutton mot de passe oublié est créé -->
-    <!-- TODO faker un envoit de  -->
+
     <div>
       <!-- Popup lorsque le bouton "Mot de passe oublié" est cliqué -->
       <div v-if="forgottenPasswordClicked"
@@ -78,7 +75,8 @@
         </div>
       </div>
     </div>
-    <!-- Footer -->
+
+
     <FooterComponent/>
   </div>
 </template>
@@ -101,7 +99,7 @@ const isLoading = ref(false);
 
 const router = useRouter();
 
-const forgottenPasswordClicked = ref(false); // Gère l'état de la popup
+const forgottenPasswordClicked = ref(false);
 
 const changeForgottenValue = () => {
   forgottenPasswordClicked.value = !forgottenPasswordClicked.value;
@@ -129,10 +127,9 @@ const validateForm = async () => {
   }
 
   try {
-    await loginAndAuthenticate(user); // Appelle la méthode centralisée
-    console.log("Connexion réussie, redirection en cours...");
+    await loginAndAuthenticate(user);
+    console.info("Connexion réussie, redirection en cours...");
   } catch (error) {
-    // Gestion des erreurs
     if (error.response && error.response.status === 401) {
       loginError.value = "Email ou mot de passe incorrect.";
     } else {

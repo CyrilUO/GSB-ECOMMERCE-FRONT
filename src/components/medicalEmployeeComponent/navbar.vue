@@ -1,7 +1,6 @@
 <template>
   <nav class="sticky top-0 z-50 bg-blue-900 text-white py-4 shadow-md">
     <div class="mx-auto flex justify-around  items-center px-4 phone:justify-between tablet:justify-between">
-      <!-- Logo -->
       <div class="flex items-center">
         <img src="../../assets/images/common/logo_gsb.png" alt="logo" class="h-10 mr-2" />
       </div>
@@ -26,7 +25,6 @@
         </button>
       </div>
 
-      <!-- Liens de navigation (toujours visible sur grand écran) -->
       <div class="flex flex-row hidden_class text-left space-x-7 md:text-lg text-base">
         <div>
 
@@ -127,7 +125,6 @@ const toggleMenu = () => {
 </script>
 
 <style scoped>
-/* Animation fluide pour le menu burger */
 nav {
   transition: all 0.3s ease-in-out;
 }

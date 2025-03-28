@@ -10,11 +10,13 @@ services:
       - .:/app  # Mount local project folder into the container
       - /app/node_modules  # Prevent overwriting node_modules
     environment:
-      - NODE_ENV=development
+      - VITE_BACKEND_URL=http://backend:8080/api  # Use 'backend' instead of 'localhost'
     command: ["npm", "run", "dev"]
     networks:
-      - gsb-network  # Attach service to the network
+      - gsb_shared_network  # Attach service to the network
+    depends_on:
+      - backend #Ensure the backend starst firts
 
 networks:
-  gsb-network:
-    driver: bridge
+  gsb_shared_network:
+    external: true

@@ -5,13 +5,17 @@ import router from "@/router/index.js";
 import {useUserStore} from "@/store/userStore.js";
 
 /**
- * @type {string}
  * @description URL de base pour toutes les requêtes vers l'API principale.
  */
+
+// const API_URL_DOCKER = import.meta.env.VITE_BACKEND_URL;
+
 const API_TOKEN_URL = "http://localhost:8080/auth/login";
-const BACK_API_REQUEST_BASE_URL = "http://localhost:8080/api";
 export const LOGIN_API_REQUEST_URL = "http://localhost:8080/auth/login";
 const CONTENT_TYPE = "application/json";
+const BACK_API_REQUEST_BASE_URL = "http://localhost:8080/api";
+const BEARER_TOKEN = `Bearer ${localStorage.getItem("authToken")}`
+
 
 /**
  * @description Instance Axios configurée pour communiquer avec l'API, incluant un intercepteur pour ajouter le token d'authentification.
@@ -19,79 +23,97 @@ const CONTENT_TYPE = "application/json";
 export const loginApi = axios.create({
     baseURL: LOGIN_API_REQUEST_URL,
     headers: {
-        "Content-Type": CONTENT_TYPE
+        "Content-Type": CONTENT_TYPE,
     }
 });
 
+
 export const authApi = axios.create({
     baseURL: BACK_API_REQUEST_BASE_URL,
-    headers: {"Content-Type": CONTENT_TYPE},
+    headers: {
+        "Content-Type": CONTENT_TYPE,
+    },
 });
 
 /**
- * @description Intercepteur des requêtes pour ajouter le token JWT dans les headers si disponible.
+ * @description Forcer l('insertion du token dans les headers si un token existe (sa validité est déjà gérée)
+ */
+const token = localStorage.getItem("authToken");
+if (token) {
+    authApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
+
+
+/**
+ * @description Intercepteur des requêtes qui ajoute le token JWT dans les headers si disponible à chaque requête.
  */
 authApi.interceptors.request.use(async (config) => {
-    const userStore = useUserStore(); // Charge le store utilisateur
-    const token = localStorage.getItem("authToken"); // Récupère directement depuis le localStorage
+    const userStore = useUserStore();
+    const token = localStorage.getItem("authToken");
 
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     } else {
-        console.warn("Token manquant. Nettoyage et redirection.");
+        console.warn("Token manquant");
         userStore.clearCurrentUser();
-        localStorage.removeItem("authToken"); // Assure-toi qu'il est bien supprimé
         return Promise.reject("Aucun token, arrêt des requêtes.");
     }
     return config;
 });
 
 
+/**
+ * @description Fonction qui intercepte la réponse d'une promesse AAxios
+ * - En cas de promesse résolue : mise à jour du token du local storage, dans instance authApi et dans userStore
+ * - En cas de promesse rejetée : Tentative récupération nouveau token avec un retry avec ancien token. Si mauvais déconnexion auto via le rotuer push
+ */
 authApi.interceptors.response.use(
     async (response) => {
-        if (response.data && response.data.newToken) {
-            console.log("🔄 Mise à jour du token reçu après mise à jour utilisateur.");
-
-            // ✅ Mettre à jour immédiatement dans le store
+        // Mise à jour du token si reçu dans la réponse
+        if (response.data?.newToken) {
             const userStore = useUserStore();
-            userStore.setAuthToken(response.data.newToken);
+            const newToken = response.data.newToken;
 
-            // ✅ Mettre à jour localStorage pour éviter la déconnexion soudaine
-            localStorage.setItem("authToken", response.data.newToken);
-
-            authApi.defaults.headers.common["Authorization"] = `Bearer ${response.data.newToken}`;
+            console.info("Mise à jour du token reçu après mise à jour utilisateur.");
+            userStore.setAuthToken(newToken);
+            localStorage.setItem("authToken", newToken);
+            authApi.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
         }
         return response;
     },
     async (error) => {
-        if (error.response && error.response.status === 401) {
-            console.warn("🚨 Token invalide ou expiré. Tentative de récupération...");
-            const userStore = useUserStore();
+        const originalRequest = error.config;
+        const userStore = useUserStore();
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
 
             try {
                 const newToken = await fetchToken();
                 if (newToken) {
-                    console.log("✅ Nouveau token récupéré, mise à jour immédiate.");
+                    console.info("Nouveau token récupéré, mise à jour immédiate.");
+                    localStorage.setItem("authToken", newToken);
                     authApi.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
-                    return authApi(error.config);
+                    originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+                    return authApi(originalRequest);
                 }
             } catch (refreshError) {
-                console.warn("❌ Impossible de récupérer un nouveau token. Déconnexion...");
-                userStore.clearCurrentUser();
-                localStorage.removeItem("authToken");
-                await router.push("/logout");
+                console.warn("Impossible de récupérer un nouveau token. Déconnexion...");
             }
+
+            userStore.clearCurrentUser();
+            localStorage.removeItem("authToken");
+            await router.push("/logout");
         }
-        throw error;
+
+        return Promise.reject(error);
     }
 );
 
 
 
 /**
- * @function fetchToken
- * @description Récupère le token JWT, soit depuis le stockage local s'il existe, soit en le demandant à l'API.
- * @returns {Promise<string|null>} Le token JWT ou `null` si une erreur se produit.
+ * @description Récupère le token JWT, soit depuis le stockage local s'il existe, soit en le demandant à l'API d'auth.
  */
 const fetchToken = async () => {
     const existingToken = localStorage.getItem("authToken");
@@ -100,7 +122,7 @@ const fetchToken = async () => {
         const payload = parseJwt(existingToken);
 
         if (payload && payload.exp * 1000 > Date.now()) {
-            console.log("Token valide.");
+            console.info("Token valide.");
 
             return existingToken;
         } else {
@@ -113,8 +135,8 @@ const fetchToken = async () => {
         const response = await axios.get(API_TOKEN_URL);
         const token = response.data.token;
 
-        const userStore = useUserStore(); // Appelle le store Pinia
-        userStore.setAuthToken(token); // Mets à jour le token dans le store
+        const userStore = useUserStore();
+        userStore.setAuthToken(token);
 
         return token;
     } catch (err) {
@@ -125,16 +147,14 @@ const fetchToken = async () => {
 
 
 /**
- * @function parseJwt
  * @description Décode un token JWT et extrait le payload au format JSON.
- * @param {string} token - Le token JWT à décoder.
- * @returns {Object|null} Le payload JSON décodé ou `null` en cas d'erreur.
- * @throws {Error} Si le token est invalide ou si le format est incorrect.
  */
 
 export const parseJwt = (token) => {
     try {
-        if (!token || typeof token !== "string") new Error("Token JWT invalide ou absent.")
+        if (!token || typeof token !== "string"){
+            new Error("Token JWT invalide ou absent.")
+        }
 
         console.log("Token JSON chiffré :", token);
 
@@ -146,7 +166,7 @@ export const parseJwt = (token) => {
 
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = atob(base64); // Décode la chaîne Base64 en texte clair.
-        console.log("Payload JSON déchiffré :", jsonPayload);
+        console.info("Payload JSON déchiffré :", jsonPayload);
 
         return JSON.parse(jsonPayload); // Convertit le JSON en objet JavaScript.
     } catch (error) {

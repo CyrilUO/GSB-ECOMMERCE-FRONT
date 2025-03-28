@@ -6,7 +6,6 @@
         v-if="product"
         class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center space-y-4"
     >
-      <!-- Image -->
       <div class="w-32 h-32 rounded-lg overflow-hidden shadow-md">
         <img
             :src="product.productImage || 'https://via.placeholder.com/150/cccccc/ffffff?text=No+Image'"
@@ -109,10 +108,10 @@ const productId = Number(route.params.id);
 
 const product = ref(null);
 const loading = ref(true);
-const quantity = ref(1); // Quantité par défaut
-const productStock = ref(0); // Stock dynamique
+const quantity = ref(1);
+const productStock = ref(0);
 const initialProductStock = ref(0)
-const totalPrice = ref(0); // Prix total calculé
+const totalPrice = ref(0);
 const cartStore = useCartStore();
 const {cart} = storeToRefs(cartStore);
 
@@ -183,8 +182,8 @@ const decreaseQuantity = () => {
 
 // Validation pour l'input
 const onQuantityInput = (event) => {
-  const regex = /^[0-9]*$/; // Accepte uniquement les chiffres
-  let value = event.target.value.replace(/\D/g, ""); // Supprime les caractères non numériques
+
+  let value = event.target.value.replace(/\D/g, "");
   value = parseInt(value || "0", 10);
 
   const quantityInCart = cartStore.applyQuantityChosenToStock(productId);
@@ -229,7 +228,7 @@ onMounted(async () => {
 
 <style scoped>
 .page-produits-body {
-  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+  background: linear-gradient(to right, #dbeafe, #93c5fd);
 }
 /* Retirer les flèches de l'input number */
 input[type="number"]::-webkit-inner-spin-button,

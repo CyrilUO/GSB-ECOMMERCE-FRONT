@@ -4,12 +4,6 @@
 
     <div class="bg-white shadow-lg rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-6 text-blue-700">Liste des Utilisateurs</h2>
-      <p
-          class="bg-green-500 text-white font-semibold rounded-lg py-2 px-4 text-center mb-4"
-          v-if="messageStatus"
-      >
-        {{ messageStatus }}
-      </p>
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white border-collapse border-gray-200 rounded-lg shadow-md">
           <thead>
@@ -131,12 +125,9 @@ import {format} from "date-fns/format";
 import { fr } from "date-fns/locale"
 
 const users = ref([])
-const messageStatus = ref('');
 const route = useRouter()
 
-/** Fonction pour récupérer l'ensemble des données de la table users à afficher
- * @returns {Promise<void>}
- */
+
 const getUsersData = async () => {
 
   try {
@@ -145,21 +136,15 @@ const getUsersData = async () => {
   } catch (error) {
     console.error("Erreur lors de la récuperation des donnees :", error)
   }
-
 }
 
 const deleteUser = async (id) => {
   if (confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
     try {
       await deleteUserRequest(id);
-      messageStatus.value = `Utilisateur ${id} supprimé avec succès.`;
     } catch (error) {
       console.error("Erreur lors de la suppression :", error);
-      messageStatus.value = `Échec : Impossible de supprimer l'utilisateur ${id}.`;
     } finally {
-      setTimeout(() => {
-        messageStatus.value = "";
-      }, 5000);
       await getUsersData();
     }
   }
@@ -181,10 +166,8 @@ const goToUpdateUser = async (user) => {
 };
 
 
-
-
-onMounted(() => {
-  getUsersData();
+onMounted(async () => {
+  await getUsersData();
 })
 
 </script>

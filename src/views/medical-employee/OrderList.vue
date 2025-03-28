@@ -120,7 +120,7 @@
 }
 
 .page-produits-body {
-  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+  background: linear-gradient(to right, #dbeafe, #93c5fd);
 }
 </style>
 

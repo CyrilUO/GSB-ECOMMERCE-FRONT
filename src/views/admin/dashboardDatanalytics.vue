@@ -29,21 +29,19 @@ Chart.register(...registerables);
 const userChart = ref(null);
 const productStockChart = ref(null);
 
-// Données pour les graphiques
 const userStats = ref([]);
 const productStock = ref([]);
 
-// Récupération des statistiques des utilisateurs
 const fetchUserStats = async () => {
   try {
     const response = await getDailyUsersStatsRequest();
     userStats.value = response.data;
+    console.info(userStats.value)
   } catch (error) {
     console.error("Erreur lors de la récupération des statistiques des utilisateurs :", error);
   }
 };
 
-// Récupération des stocks des produits
 const fetchProductStock = async () => {
   try {
     const response = await getCurrentProductStockRq();
@@ -52,6 +50,7 @@ const fetchProductStock = async () => {
     console.error("Erreur lors de la récupération des stocks des produits :", error);
   }
 };
+
 const setupUserChart = () => {
   const labels = userStats.value.map((item) => item.creation_date);
   const values = userStats.value.map((item) => item.user_count);
@@ -120,7 +119,7 @@ const setupProductStockChart = () => {
           label: "Quantité en stock",
           data: values,
           backgroundColor: "rgba(54, 162, 235, 0.5)",
-          borderColor: "rgba(54, 162, 235, 1)",
+          borderColor: "rgb(137,187,220)",
           borderWidth: 1,
           barPercentage: 0.6,
           categoryPercentage: 0.8,
@@ -154,18 +153,15 @@ const setupProductStockChart = () => {
 };
 
 
-// Chargement des données et initialisation des graphiques
 onMounted(async () => {
   await fetchUserStats();
   await fetchProductStock();
-
-  setupUserChart();
-  setupProductStockChart();
+  await setupUserChart();
+  await setupProductStockChart();
 });
 </script>
 
 <style>
-/* Ajustement pour les conteneurs */
 canvas {
   display: block;
   width: 100% !important;

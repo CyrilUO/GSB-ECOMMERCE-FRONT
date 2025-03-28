@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <!-- Header Section -->
     <header class="bg-gray-800 text-white py-4 shadow-md">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl font-bold">Conditions Générales d'Utilisation</h2>
@@ -8,11 +7,9 @@
             src="../../assets/images/common/logo_gsb.png"
             class="mx-auto mt-6 mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
         />
-        <p class="text-sm mt-2">Dernière mise à jour : Novembre 2024</p>
       </div>
     </header>
 
-    <!-- Content Section -->
     <main class="container mx-auto bg-gray-100 px-4 py-8  shadow-lg rounded-lg mt-8 mb-8">
       <section v-for="(section, index) in cguSections" :key="index" class="mb-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ section.title }}</h2>
@@ -28,10 +25,6 @@
     <footer class="bg-gray-800 text-white py-4 mt-auto">
       <div class="container mx-auto px-4 text-center">
         <p>&copy; GSB Ecommerce. Tous droits réservés.</p>
-        <p class="text-sm mt-2">
-          Pour toute question, contactez-nous à
-          <span class="text-blue-400">[email@example.com]</span>.
-        </p>
       </div>
     </footer>
   </div>
@@ -56,7 +49,6 @@ const cguSections = ref([
     title: "3. Accès aux Services",
     content: [
       "3.1. Utilisateurs autorisés : L'accès à nos services est réservé aux professionnels de la santé, tels que définis par la législation en vigueur (médecins, pharmaciens, dentistes, etc.), disposant d'un numéro d'identification professionnelle valide (ex. : RPPS).",
-      "3.2. Création de compte : Pour accéder aux fonctionnalités, l’utilisateur doit créer un compte en fournissant des informations professionnelles exactes et une adresse e-mail professionnelle active. L’utilisateur est responsable de la confidentialité de ses identifiants de connexion et de l’usage de son compte.",
     ],
   },
   {
@@ -88,23 +80,13 @@ const cguSections = ref([
     title: "8. Suspension et Résiliation",
     content: [
       "8.1. Suspension des services : Nous nous réservons le droit de suspendre l'accès aux services en cas de non-respect des CGU ou d'utilisation frauduleuse ou abusive.",
-      "8.2. Résiliation : L’utilisateur peut résilier son compte à tout moment en contactant notre service client.",
+      "8.2. Résiliation : L’utilisateur peut résilier son compte à tout moment en contactant notre admin.",
     ],
   },
   {
     title: "9. Modification des CGU",
     content:
         "Nous nous réservons le droit de modifier les CGU à tout moment pour répondre aux évolutions législatives ou améliorer nos services. Toute modification sera notifiée à l’utilisateur via e-mail ou publication sur notre site.",
-  },
-  {
-    title: "10. Droit applicable et Juridiction compétente",
-    content:
-        "Les présentes CGU sont régies par les lois en vigueur dans le pays d’implantation de l’entreprise. Tout litige sera soumis à la compétence exclusive des tribunaux compétents.",
-  },
-  {
-    title: "11. Contact",
-    content:
-        "Pour toute question ou réclamation relative aux présentes CGU, contactez-nous à:  \nTéléphone : [Votre Numéro de Téléphone] \nAdresse : [Votre Adresse]",
   },
 ]);
 

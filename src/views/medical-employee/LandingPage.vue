@@ -1,10 +1,8 @@
 <template>
   <div class="h-screen overflow-hidden bg-gray-50">
 
-    <!-- NavBar Component -->
     <NavBar />
 
-    <!-- Hero Section -->
     <header class="relative h-full w-full">
 
       <div class="absolute inset-0">
@@ -12,6 +10,7 @@
             src="@/assets/images/med-bg-min.jpg"
             alt="background-med-images"
             class="w-full h-full object-cover filter brightness-75"
+            loading="eager"
         />
       </div>
 

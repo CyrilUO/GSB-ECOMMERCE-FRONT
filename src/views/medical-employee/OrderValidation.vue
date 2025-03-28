@@ -113,7 +113,7 @@ const orderData = ref(null);
 
 
 onMounted(async () => {
-  document.body.classList.add("page-produits-body"); // Retrait de la classe au body
+  document.body.classList.add("page-produits-body");
 
   if (!orderId.value) {
     alert("Une erreur est survenue : l'identifiant de la commande est introuvable.");
@@ -143,5 +143,5 @@ onMounted(async () => {
 
 <style scoped>
 .page-produits-body {
-  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+  background: linear-gradient(to right, #dbeafe, #93c5fd);
 }</style>

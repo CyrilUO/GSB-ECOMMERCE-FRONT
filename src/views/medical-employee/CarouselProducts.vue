@@ -12,7 +12,7 @@
         <div
             v-for="(product, index) in paginatedProducts"
             :key="product.productId"
-            class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105"
+            class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg"
         >
           <img
               :src="product.productImage"
@@ -35,8 +35,7 @@
         </div>
       </div>
 
-      <!-- Pagination -->
-      <div class="flex justify-center mt-6 space-x-4">
+      <div class="flex justify-center mt-6 space-x-4" id="custo">
         <button
             v-for="page in totalPages"
             :key="page"
@@ -54,16 +53,19 @@
 import {ref, onMounted, onBeforeUnmount} from "vue";
 import { useRouter } from "vue-router";
 import NavBar from "../../components/medicalEmployeeComponent/navbar.vue";
-import { getProductsRequest } from "@/services/products/productService.js";
+import {getProductsRequest} from "@/services/products/productService.js";
 import Mediazol from "@/assets/images/medecine/mediazol.png";
 
 const router = useRouter();
 
-const products = ref([]); // Tous les produits récupérés
-const paginatedProducts = ref([]); // Produits affichés pour la page actuelle
-const currentPage = ref(1); // Page courante
-const itemsPerPage = 4; // Nombre de produits par page
-const totalPages = ref(1); // Nombre total de pages
+const products = ref([]);
+const paginatedProducts = ref([]);
+const currentPage = ref(1);
+const itemsPerPage = 1000;
+const totalPages = ref(1);
+
+
+
 
 // Récupération des produits
 const fetchProducts = async () => {
@@ -114,13 +116,20 @@ const goToDetails = (product) => {
   });
 };
 
-onMounted(() => {
-  fetchProducts(); // Appel de la fonction fetchProducts
-  document.body.classList.add("page-produits-body"); // Ajout de la classe au body
+
+
+onMounted(async () => {
+  await fetchProducts(); // Charge les produits
+
+
+  const page = document.getElementById('custo')
+  page.classList.add('custo')
+
+  document.body.classList.add("page-produits-body");
 });
 
 onBeforeUnmount(() => {
-  document.body.classList.remove("page-produits-body"); // Retrait de la classe au body
+  document.body.classList.remove("page-produits-body");
 });
 
 
@@ -130,8 +139,11 @@ onBeforeUnmount(() => {
 
 <style>
 
+.custo{
+  display: none !important;
+}
 
 .page-produits-body {
-  background: linear-gradient(to right, #dbeafe, #93c5fd); /* Couleurs utilisées par Tailwind */
+  background: linear-gradient(to right, #dbeafe, #93c5fd);
 }
 </style>

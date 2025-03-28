@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-screen bg-gray-100 text-gray-800">
+  <div class="flex flex-col items-center page-custo justify-center h-screen text-gray-800">
     <img
         src="../assets/images/common/logo_gsb.png"
         class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-lg bg-white p-2 border border-gray-300"
     />
-    <div class="bg-white shadow-md rounded-lg p-6 text-center w-80">
+    <div class="bg-white shadow-md rounded-lg p-6 text-center content-center w-6/12 h-auto">
       <div class="loaderCusto mx-auto mb-4"></div>
       <h2 class="text-2xl font-bold mb-2">Authentification Réussie</h2>
       <p class="text-sm text-gray-600 mb-4">
-        Vous allez être redirigé vers la page dans {{ countdown }} seconde<span v-if="countdown > 1">s</span>.
+        Vous serez redirigé vers la page de connexion dans <span class="custo-countdown" >{{ countdown }}</span> seconde<span v-if="countdown > 1">s</span>.
       </p>
     </div>
   </div>
@@ -16,10 +16,10 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import {ref, onMounted, onUnmounted} from "vue";
 
 const router = useRouter();
-const countdown = ref(3);
+const countdown = ref(5);
 
 const startCountdown = () => {
   const interval = setInterval(() => {
@@ -43,29 +43,58 @@ const startCountdown = () => {
   }, 1000);
 };
 
-onMounted(() => {
+onMounted( () => {
   startCountdown();
 });
+
+
+
 
 </script>
 
 <style scoped>
 
+.custo-countdown {
+  font-size: 14px;
+  font-family: Magneto,serif ;
+  font-weight: bold;
+  color: #4e00ff;
+}
+
+.page-custo {
+  background: linear-gradient(to right, #dbeafe, #93c5fd)
+}
+
 .loaderCusto {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #285494;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #92d4ff;
+  border-block-color: #031f48;
+  border-inline-color: #4e00ff;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+  animation: spin 1.2s linear infinite;
+}
+
+
+
+.loaderCusto::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 2px dashed #92d4ff;
+  border-radius: 50%;
+  animation: spinReverse 1.5s linear infinite;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinReverse {
+  100% { transform: rotate(-360deg); }
 }
 </style>

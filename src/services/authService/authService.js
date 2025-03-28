@@ -2,14 +2,17 @@ import {authApi, LOGIN_API_REQUEST_URL, loginApi, parseJwt} from "@/services/api
 import {useUserStore} from "@/store/userStore.js";
 import router from "@/router/index.js";
 
+console.log("authApi dans authService", authApi.defaults.data);
 
 export const loginAndAuthenticate = async (user) => {
     try {
-        console.log("Tentative de connexion à :", LOGIN_API_REQUEST_URL);
-
-        // Requête d'authentification
+        console.log("%cStylé en rouge", "color: red; font-weight: bold;");
+        console.timeLog("Début du process")
+        console.trace("Tentative de connexion à :", LOGIN_API_REQUEST_URL);
+        console.time("chargement")
         const response = await loginApi.post("", user);
-        console.log("Réponse de l'API :", response.data);
+        console.info("Réponse de l'API :", response.data);
+        console.timeEnd("fin du chargement")
 
         if (response.status === 200) {
             const token = response.data;
@@ -17,15 +20,17 @@ export const loginAndAuthenticate = async (user) => {
 
             localStorage.removeItem("authToken");
             localStorage.setItem("authToken", token);
-            authApi.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Mise à jour immédiate du header
+
+            /* Mise à jour immédiate du header de l'instance axios authApi afin que les requêtes soit authentifiées*/
+            authApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
 
-            // Décodage du token
             const decryptedToken = parseJwt(token);
             console.log("Token décodé :", decryptedToken);
 
             const userStore = useUserStore();
             userStore.setAuthToken(token);
+            localStorage.setItem("userId", decryptedToken.userId)
 
             const userRole = decryptedToken?.roleName;
             console.log("Rôle utilisateur :", userRole);
@@ -33,11 +38,12 @@ export const loginAndAuthenticate = async (user) => {
             if (userRole) {
                 localStorage.setItem("userRole", userRole);
                 userStore.roleName = userRole;
+
                 await router.push("/login-success");
             } else {
                 console.error("Rôle non attribué dans le token.");
                 throw new Error("Rôle non attribué.");
-            }
+            } console.timeLog("Fin du process")
         } else {
             throw new Error(response.data.message || "Erreur lors de la connexion.");
         }
@@ -47,12 +53,3 @@ export const loginAndAuthenticate = async (user) => {
     }
 };
 
-// export const invalidateToken = async () => {
-//     console.log("🔹 [Invalidate token] Appel API lancé pour invalider le token");
-//     try {
-//         const response = await authApi.post("/api/logout");
-//         console.log("response : ", response.data)
-//     } catch (error) {
-//         console.error("Erreur lors de l'invalidation", error)
-//     }
-// }
